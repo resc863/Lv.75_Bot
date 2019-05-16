@@ -5,3 +5,5 @@ Request
 Urllib
 Bs4
 Json
+
+주의:아직 봇에 미완성된 기능이 있을수 있습니다.
