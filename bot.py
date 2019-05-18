@@ -11,6 +11,7 @@ import os
 import sys
 import json
 import parser
+import history
 from urllib.request import urlopen, Request
 from discord import Member
 from discord.ext import commands
