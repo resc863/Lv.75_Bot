@@ -605,15 +605,15 @@ async def on_message(message):
         
 @client.event
 async def on_member_join(member):
-    fmt = '{1.name} 에 오신것을 환영합네다., {0.mention} 동무'
+    fmt = '{1.name} 에 오신것을 환영합니다., {0.mention} 님'
     channel = member.server.get_channel("channel_id_here")
     await client.send_message(channel, fmt.format(member, member.server))
-    await client.send_message(member, "반갑습네다 <@"+id+">동무 마피아 시티에 오신것을 환영합네다. 공지를 읽어주기 바랍네다.")
+    await client.send_message(member, "반갑습니다 <@"+id+">님. Lv.75 Bot을 이용해주셔서 감사합니다. 공지를 읽어주기 바랍니다.")
 
 @client.event
 async def on_member_remove(member):
     channel = member.server.get_channel("channel_id_here")
-    fmt = '{0.mention} 동무가 숙청당하였습네다.'
+    fmt = '{0.mention} 님이 나갔습니다.'
     await client.send_message(channel, fmt.format(member, member.server))
 
 client.run(token)
