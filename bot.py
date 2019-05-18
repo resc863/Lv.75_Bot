@@ -137,17 +137,17 @@ async def on_message(message):
 
     a = str(random.randint(1,100))
 
-    if message.content.startswith('반갑습네다'): 
-        await client.send_message(channel, "반갑습네다 <@"+id+"> 동무" )
+    if message.content.startswith('반갑습니다'): 
+        await client.send_message(channel, "반갑습니다 <@"+id+"> 님" )
         
     if message.content.startswith('위대하신'): 
         await client.send_message(channel, "수령 동지를 위하여" )
         
     if message.content.startswith('오늘의 운세는?'): 
-        await client.send_message(channel, "<@"+id+"> 동무의 운은 "+a+"%입네다")
+        await client.send_message(channel, "<@"+id+"> 님의 운은 "+a+"%입니다")
 
     if message.content.startswith('!명령어'):
-        embed = discord.Embed(title="Lv.75 Bot 명령어 목록 ", description="반갑습네다 = 반갑습네다 닉네임 동무")
+        embed = discord.Embed(title="Lv.75 Bot 명령어 목록 ", description="반갑습니다 = 반갑습니다 id 님")
         embed.add_field(name="날씨", value="날씨 + 지역명 : 현재 지역 날씨", inline=False)
         embed.add_field(name="급식", value="오늘 급식은? > 학교 이름 입력 > 날짜 입력 : 급식 식단 출력 (부산광역시교육청 전용)", inline=False)
         embed.add_field(name="실시간 검색어 순위", value="실검 : 현재 실시간 검색어 순위", inline=False)
