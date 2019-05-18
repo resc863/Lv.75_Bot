@@ -4,7 +4,7 @@ import urllib
 from bs4 import BeautifulSoup
 
 def get_info():
-    name = "Lv.99_B0SS"
+    name = learn
     enc_name = urllib.parse.quote(name)
     url = "https://r6.tracker.network/profile/pc/"+enc_name
     html = requests.get(url)
@@ -46,5 +46,5 @@ def get_info():
     time2 = time1.text
     print(time2)
 
-
+learn = "Lv.99_B0SS"
 get_info()
