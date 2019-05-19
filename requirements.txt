@@ -2,9 +2,6 @@ discord.py==0.16.12
 asyncio
 datetime
 requests
-re
 youtube_dl
-urllib
-urllib.request
 bs4
 parser
