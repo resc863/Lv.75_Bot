@@ -1,0 +1,14 @@
+discord.py==0.16.12
+asyncio.py
+random.py
+datetime.py
+requests.py
+re.py
+youtube_dl.py
+urllib.py
+urllib.request.py
+bs4.py
+os.py
+sys.py
+json.py
+parser.py
