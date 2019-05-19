@@ -5,3 +5,4 @@ requests
 youtube_dl
 bs4
 selenium
+ffmpeg
