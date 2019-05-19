@@ -4,3 +4,4 @@ datetime
 requests
 youtube_dl
 bs4
+selenium
