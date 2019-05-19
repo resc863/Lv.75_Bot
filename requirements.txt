@@ -1,6 +1,5 @@
 discord.py==0.16.12
 asyncio
-random
 datetime
 requests
 re
