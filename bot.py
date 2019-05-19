@@ -14,7 +14,6 @@ import parser
 from urllib.request import urlopen, Request
 from discord import Member
 from discord.ext import commands
-from selenium import webdriver #크롬드라이버 설치 후 환경변수 지정하기
 from bs4 import BeautifulSoup #패키지 설치 필수
 
 client = discord.Client()
