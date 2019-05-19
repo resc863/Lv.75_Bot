@@ -19,7 +19,7 @@ from bs4 import BeautifulSoup #패키지 설치 필수
 
 client = discord.Client()
 
-token = os.environ("bottoken")
+token = os.environ["bottoken"]
 schcode = ""
 
 def get_diet(code, ymd, weekday):
