@@ -625,8 +625,8 @@ async def on_message(message):
 
 
     if message.content.startswith("!play"):
-	
-	channel = message.author.voice.voice_channel
+        
+        channel = message.author.voice.voice_channel
         server = message.server
         voice_client = client.voice_client_in(server)
         print(voice_client)
