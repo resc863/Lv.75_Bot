@@ -124,16 +124,6 @@ async def on_ready():
     print("===============")
     await client.change_presence(game=discord.Game(name=":D", type=1))
 
-@client.command(pass_context=true)
-async def connect(ctx):
-	channel = ctx.message.authorvoice.voice_channel
-	await client.join_voice_channel(channel)
-
-async def disconnect(ctx):
-        server = ctx.message.server
-        voice_client = client.voice_client_in(server)
-        await voice_client(disconnect)
-
 @client.event
 async def on_message(message):
     now = datetime.datetime.now()
