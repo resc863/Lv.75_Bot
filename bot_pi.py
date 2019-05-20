@@ -21,7 +21,7 @@ from bs4 import BeautifulSoup #패키지 설치 필수
 
 client = discord.Client()
 
-token = "NTU4NDM1ODYyODU0MjM4MjI3.XOKkaA.FLhbeHtyF9f8w3lTGx71UpcqLAw"
+token = ""
 schcode = ""
 
 driver = webdriver.Chrome('/usr/lib/chromium-browser/chromedriver')
