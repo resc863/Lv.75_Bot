@@ -2,6 +2,12 @@ import requests, re
 import parser
 import urllib
 from bs4 import BeautifulSoup
+import youtube_dl
+
+opts = {}
+with youtube_dl.YoutubeDL(opts) as ydl:
+    song_info = ydl.extract_info('https://www.youtube.com/watch?v=dQw4w9WgXcQ', download=False)
+    print(song_info)
 
 def get_info():
     name = learn

@@ -12,15 +12,19 @@ import os
 import sys
 import json
 import parser
+import selenium
 from urllib.request import urlopen, Request
 from discord import Member
 from discord.ext import commands
+from selenium import webdriver
 from bs4 import BeautifulSoup #패키지 설치 필수
 
 client = discord.Client()
 
-token = os.environ["bottoken"]
+token = "NTU4NDM1ODYyODU0MjM4MjI3.XOKkaA.FLhbeHtyF9f8w3lTGx71UpcqLAw"
 schcode = ""
+
+driver = webdriver.Chrome('/usr/lib/chromium-browser/chromedriver')
 
 def get_diet(code, ymd, weekday):
     schMmealScCode = code #int 1조식2중식3석식
@@ -625,19 +629,10 @@ async def on_message(message):
 
 
     if message.content.startswith("!play"):
-        
-        channel = message.author.voice.voice_channel
         server = message.server
-        voice_client = client.voice_client_in(server)
-        print(voice_client)
-        
-        if voice_client== None:
-            await client.join_voice_channel(channel)
-
-        voice_client = client.voice_client_in(server)
-
         msg1 = message.content.split(" ")
         url = msg1[1]
+        voice_client = client.voice_client_in(server)
         player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id))
         print(player.is_playing())
         players[server.id] = player
