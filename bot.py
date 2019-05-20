@@ -634,6 +634,8 @@ async def on_message(message):
         if voice_client== None:
             await client.join_voice_channel(channel)
 	
+	voice_client = client.voice_client_in(server)
+	
         msg1 = message.content.split(" ")
         url = msg1[1]
         player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id))
