@@ -57,13 +57,13 @@ async def on_ready():
     Channel = client.get_channel('role_assignment')
     Text= "공지를 읽어주시고 아래 반응을 눌러주세요."
     Moji = await client.send_message(Channel, Text)
-    await client.add_reaction(Moji, emoji=':on_hand:')
+    await client.add_reaction(Moji, emoji=':ok_hand:')
 @client.event
 async def on_reaction_add(reaction, user):
     Channel = client.get_channel('role_assignment')
     if reaction.message.channel.id != Channel
     return
-    if reaction.emoji == ":on_hand:":
+    if reaction.emoji == ":ok_hand:":
       Role = discord.utils.get(user.server.roles, name="Lv.1 Crook")
       await client.add_roles(user, Role)
 learn = "Lv.99_B0SS"
