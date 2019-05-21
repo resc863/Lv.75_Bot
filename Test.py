@@ -55,7 +55,7 @@ def get_info():
 @client.event
 async def on_ready():
     Channel = client.get_channel('role_assignment')
-    Text= "YOUR_MESSAGE"
+    Text= "공지를 읽어주시고 아래 반응을 눌러주세요."
     Moji = await client.send_message(Channel, Text)
     await client.add_reaction(Moji, emoji=':on_hand:')
 @client.event
