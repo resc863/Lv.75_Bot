@@ -52,5 +52,19 @@ def get_info():
     time2 = time1.text
     print(time2)
 
+@client.event
+async def on_ready():
+    Channel = client.get_channel('role_assignment')
+    Text= "YOUR_MESSAGE"
+    Moji = await client.send_message(Channel, Text)
+    await client.add_reaction(Moji, emoji=':on_hand:')
+@client.event
+async def on_reaction_add(reaction, user):
+    Channel = client.get_channel('role_assignment')
+    if reaction.message.channel.id != Channel
+    return
+    if reaction.emoji == ":on_hand:":
+      Role = discord.utils.get(user.server.roles, name="Lv.1 Crook")
+      await client.add_roles(user, Role)
 learn = "Lv.99_B0SS"
 get_info()
