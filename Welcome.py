@@ -20,7 +20,7 @@ async def on_reaction_add(reaction, user):
     if reaction.message.channel.id != Channel
     return
     if reaction.emoji == ":ok_hand:":
-      Role = discord.utils.get(user.server.roles, name="[guest]")
+      Role = discord.utils.get(user.server.roles, name="[Guest]")
       await client.add_roles(user, Role)
 
 @client.event
