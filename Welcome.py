@@ -30,7 +30,7 @@ async def on_member_join(member):
     await client.send_message(channel, fmt.format(member, member.server))
     await client.send_message(member, "반갑습니다 <@"+id+">님.")
     Text= "공지를 읽어주시고 아래 반응을 눌러주세요."
-    Moji = await client.send_message(Channel, Text)
+    Moji = await client.send_message(channel, Text)
     await client.add_reaction(Moji, emoji=':ok_hand:')
 
 
