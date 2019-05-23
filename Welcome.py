@@ -4,7 +4,7 @@ from discord import Member
 from discord.ext import commands
 
 client = discord.Client()
-token = os.(key)
+token = os.environ(key)
 
 @client.event
 async def on_ready():
@@ -25,3 +25,5 @@ async def on_reaction_add(reaction, user):
     if reaction.emoji == ":ok_hand:":
       Role = discord.utils.get(user.server.roles, name="[guest]")
       await client.add_roles(user, Role)
+
+client.run(token)
