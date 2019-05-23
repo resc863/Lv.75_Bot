@@ -4,6 +4,7 @@ from discord import Member
 from discord.ext import commands
 
 client = discord.Client()
+token = os.(key)
 
 @client.event
 async def on_ready():
