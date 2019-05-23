@@ -1,6 +1,7 @@
 import discord
 import asyncio
 from discord import Member
+from discord.ext import commands
 
 client = discord.Client()
 
