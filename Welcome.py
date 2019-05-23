@@ -16,7 +16,7 @@ async def on_ready():
 
 @client.event
 async def on_reaction_add(reaction, user):
-    Channel = client.get_channel('notice')
+    Channel = client.get_channel('chat')
     if reaction.message.channel.id != Channel
     return
     if reaction.emoji == ":ok_hand:":
