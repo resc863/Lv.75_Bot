@@ -709,7 +709,8 @@ async def on_message(message):
 
 @client.event
 async def on_reaction_add(reaction,user)  
-    channel = member.client.get_channel('role_assignment')     
+    channel = member.client.get_channel('role_assignment')
+    role = discord.utils.get(member.server.roles, name="Lv.1 Crook")     
         
 @client.event
 async def on_member_join(member):
