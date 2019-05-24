@@ -123,6 +123,10 @@ async def on_ready():
     print(client.user.id)
     print("===============")
     await client.change_presence(game=discord.Game(name=":D", type=1))
+    Channel = client.get_channel('role_assignment')
+    Text= "공지를 읽어주시고 아래 반응을 눌러주세요."
+    Moji = await client.send_message(Channel, Text)
+    await client.add_reaction(Moji, emoji=':ok_hand:')
 
 @client.event
 async def on_message(message):
@@ -709,8 +713,12 @@ async def on_message(message):
 
 @client.event
 async def on_reaction_add(reaction,user)  
-    channel = member.client.get_channel('role_assignment')
-    role = discord.utils.get(member.server.roles, name="Lv.1 Crook")     
+    Channel = client.get_channel('role_assignment')
+    if reaction.message.channel.id != Channel
+    return
+    if reaction.emoji == ":ok_hand:":
+      Role = discord.utils.get(user.server.roles, name="Lv.1 Crook")
+      await client.add_roles(user, Role)     
         
 @client.event
 async def on_member_join(member):
