@@ -16,10 +16,10 @@ async def on_ready():
 
 @client.event
 async def on_member_join(member):
-    fmt = '{1.name} 에 오신것을 환영합니다., {0.mention} 님'
+    fmt = '{1.name} 에 오신것을 환영합니다., {0.mention} 님. '
     channel = member.server.get_channel("chat")
     await client.send_message(channel, fmt.format(member, member.server))
-    await client.send_message(member, "반갑습니다 <@"+id+">님.")
+    await client.send_message(member, "반갑습니다. <@"+id+">님.")
     role = discord.utils.get(member.server.roles, id="<[Guest]>")
     await bot.add_roles(member, role)
 
