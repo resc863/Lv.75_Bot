@@ -1,5 +1,7 @@
 import discord
 import asyncio
+import os
+import sys
 from discord import Member
 from discord.ext import commands
 
