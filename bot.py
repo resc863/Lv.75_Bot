@@ -706,7 +706,10 @@ async def on_message(message):
 
             del queues[server.id]
             await client.send_message(message.channel,'예약중인 음악 모두 취소 완료')
-        
+
+@client.event
+async def on_reaction_add(reaction,user)  
+    channel = client.get_channel      
         
 @client.event
 async def on_member_join(member):
