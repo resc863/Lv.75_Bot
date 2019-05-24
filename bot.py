@@ -15,11 +15,12 @@ import parser
 from urllib.request import urlopen, Request
 from discord import Member
 from discord.ext import commands
+from discord.utils import get
 from bs4 import BeautifulSoup #패키지 설치 필수
 
 client = discord.Client()
 
-token = os.environ["bottoken"]
+token = "NTU4NDM1ODYyODU0MjM4MjI3.XODLiA.-4UTOvIwjjpunNJwJLJ9FlnQIJ4"
 schcode = ""
 
 def get_diet(code, ymd, weekday):
@@ -123,11 +124,13 @@ async def on_ready():
     print(client.user.id)
     print("===============")
     await client.change_presence(game=discord.Game(name=":D", type=1))
-    Channel = client.get_channel('role_assignment')
-    Text= "공지를 읽어주시고 아래 반응을 눌러주세요."
-    Moji = await client.send_message(Channel, Text)
-    await client.add_reaction(Moji, emoji=':ok_hand:')
-
+    channel = client.get_channel('579305105107714057')
+    role = discord.utils.get(discord.server.roles, name="Lv.1 Crook")
+    message = await client.send_message(channel, "다음 이모지를 누르세요...")
+    while True:
+        reaction = await client.wait_for_reaction(emoji="\U0001F44C",message=message)
+        await client.add_roles(reaction.message.author, role)
+    
 @client.event
 async def on_message(message):
     now = datetime.datetime.now()
@@ -711,14 +714,6 @@ async def on_message(message):
             del queues[server.id]
             await client.send_message(message.channel,'예약중인 음악 모두 취소 완료')
 
-@client.event
-async def on_reaction_add(reaction,user)  
-    Channel = client.get_channel('role_assignment')
-    if reaction.message.channel.id != Channel
-    return
-    if reaction.emoji == ":ok_hand:":
-      Role = discord.utils.get(user.server.roles, name="Lv.1 Crook")
-      await client.add_roles(user, Role)     
         
 @client.event
 async def on_member_join(member):
