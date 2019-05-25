@@ -22,7 +22,7 @@ async def on_member_join(member):
     channel = member.server.get_channel("chat")
     await client.send_message(channel, fmt.format(member, member.server))
     await client.send_message(member, "반갑습니다. <@"+id+">님.")
-    role = discord.utils.get(member.server.roles, name="[Guest]")
+    role = discord.utils.get(member.server.roles, name="450322259660374036")
     await client.add_roles(member, role)
 
 client.run(token)
