@@ -9,6 +9,20 @@ with youtube_dl.YoutubeDL(opts) as ydl:
     song_info = ydl.extract_info('https://www.youtube.com/watch?v=dQw4w9WgXcQ', download=False)
     print(song_info)
 
+def info():
+    import urllib
+
+    key = "0XeO7nbthbiRoMUkYGGah20%2BfXizwc0A6BfjrkL6qhh2%2Fsl8j9PzfSLGKnqR%2F1v%2F%2B6AunxntpLfoB3Ryd3OInQ%3D%3D"
+
+    url = "http://apis.data.go.kr/6260000/BusanTblBusinfoeqStusService?servicekey="+key+"?numOfRows=10?station_loc=동부아파트"
+
+    inf = requests.get(url)
+    inf1 = BeautifulSoup(info.text, "html.parser")
+    return inf1
+
+print(info())
+
+
 def get_info():
     name = learn
     enc_name = urllib.parse.quote(name)
