@@ -133,9 +133,7 @@ async def on_ready():
     channel = client.get_channel('579305105107714057')
     role = discord.utils.get(discord.server.roles, name="Lv.1 Crook")
     message = await client.send_message(channel, "다음 이모지를 누르세요...")
-    while True:
-        reaction = await client.wait_for_reaction(emoji="\U0001F44C",message=message)
-        await client.add_roles(reaction.message.author, role)
+    await client.add_reaction(message, emoji="\U0001F44C")
     
 @client.event
 async def on_message(message):
@@ -720,6 +718,21 @@ async def on_message(message):
             del queues[server.id]
             await client.send_message(message.channel,'예약중인 음악 모두 취소 완료')
 
+@client.event
+async def on_reaction_add(reaction, user):
+    
+    channel = client.get_channel('579305105107714057')
+    role = discord.utils.get(discord.server.roles, name="Lv.1 Crook")
+    
+    if reaction.emoji == "\U0001F44C":
+        role = discord.utils.get(user.server.roles, id="558210825555410972")
+        await client.add_roles(user, role)
+
+@client.event
+async def on_reaction_remove(reaction, user):
+    if reaction.emoji == "\U0001F44C":
+        role = discord.utils.get(user.server.roles, id="558210825555410972")
+        await client.remove_roles(user, role)
         
 @client.event
 async def on_member_join(member):
