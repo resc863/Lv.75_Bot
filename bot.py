@@ -98,10 +98,10 @@ def get_code(school_name):
     return code
 
 def check_queue(id)
-        if queues[id] != []:
-             player = queues[id].pop(0)
-             players[id] = player
-             player.start()
+    if queues[id] != []:
+        player = queues[id].pop(0)
+        players[id] = player
+        player.start()
 
 
 async def print_get_meal(local_date, local_weekday, message):
