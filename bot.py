@@ -97,7 +97,7 @@ def get_code(school_name):
 
     return code
 
-def check_queue(id)
+def check_queue(id):
     if queues[id] != []:
         player = queues[id].pop(0)
         players[id] = player
