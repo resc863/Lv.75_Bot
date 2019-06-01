@@ -131,8 +131,7 @@ async def on_ready():
     print("===============")
     await client.change_presence(game=discord.Game(name=":D", type=1))
     channel = client.get_channel('579305105107714057')
-    role = discord.utils.get(discord.server.roles, name="Lv.1 Crook")
-    message = await client.send_message(channel, "다음 이모지를 누르세요...")
+    message = await client.send_message(channel, "공지를 읽고 다음 이모지를 누르세요...")
     await client.add_reaction(message, emoji="\U0001F44C")
     
 @client.event
@@ -722,7 +721,6 @@ async def on_message(message):
 async def on_reaction_add(reaction, user):
     
     channel = client.get_channel('579305105107714057')
-    role = discord.utils.get(discord.server.roles, name="Lv.1 Crook")
     
     if reaction.emoji == "\U0001F44C":
         role = discord.utils.get(user.server.roles, id="558210825555410972")
