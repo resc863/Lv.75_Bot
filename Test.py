@@ -1,27 +1,86 @@
 import requests, re
 import parser
 import urllib
+import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup
 import youtube_dl
 
-opts = {}
-with youtube_dl.YoutubeDL(opts) as ydl:
-    song_info = ydl.extract_info('https://www.youtube.com/watch?v=dQw4w9WgXcQ', download=False)
-    print(song_info)
-
-def info():
-    import urllib
-
+def stid(name,n):
     key = "0XeO7nbthbiRoMUkYGGah20%2BfXizwc0A6BfjrkL6qhh2%2Fsl8j9PzfSLGKnqR%2F1v%2F%2B6AunxntpLfoB3Ryd3OInQ%3D%3D"
+    name = urllib.parse.quote(name)
+    url = "http://61.43.246.153/openapi-data/service/busanBIMS2/busStop?serviceKey="+key+"&pageNo=1&numOfRows=10&bstopnm="+name
+    doc = urllib.request.urlopen(url)
+    xml1 = BeautifulSoup(doc,"html.parser")
+    stopid2 = xml1.findAll('bstopid',string=True)
 
-    url = "http://apis.data.go.kr/6260000/BusanTblBusinfoeqStusService?servicekey="+key+"?numOfRows=10?station_loc=동부아파트"
+    if n == 1:
+        stopid1 = str(stopid2[0])
+        stopid = stopid1[9:18]
+    elif n == 2:
+        stopid1 = str(stopid2[1])
+        stopid = stopid1[9:18]
+    return stopid
 
-    inf = requests.get(url)
-    inf1 = BeautifulSoup(info.text, "html.parser")
-    return inf1
+def info(station):
+    key = "0XeO7nbthbiRoMUkYGGah20%2BfXizwc0A6BfjrkL6qhh2%2Fsl8j9PzfSLGKnqR%2F1v%2F%2B6AunxntpLfoB3Ryd3OInQ%3D%3D"
+    url = "http://61.43.246.153/openapi-data/service/busanBIMS2/stopArr?serviceKey="+key+"&bstopid="+stid(station, 1)
+    url1 = "http://61.43.246.153/openapi-data/service/busanBIMS2/stopArr?serviceKey="+key+"&bstopid="+stid(station, 2)
 
-print(info())
+    inf1 = urllib.request.urlopen(url)
+    info1 = BeautifulSoup(inf1, "html.parser")
 
+    print("*"*20)
+    
+    for item in info1.findAll('item'):
+        
+        min1 = ""
+        station1=""
+
+        if item.min1 == None:
+            min1 = "정보가 없슴니다."
+        else:
+            min1 = item.min1.string
+
+        if item.station1 == None:
+            
+            station1 = "정보가 없슴니다."
+        else:
+            station1 = item.station1.string
+        
+        print("버스 번호:",item.lineno.string)
+        print("도착 시간:",min1)
+        print("남은 정류소 수:",station1)
+        print("="*20)
+
+    inf2 = urllib.request.urlopen(url1)
+    info2 = BeautifulSoup(inf2, "html.parser")
+
+    print("*"*30)
+
+    for item in info2.findAll('item'):
+        
+        min1 = ""
+        station1=""
+
+        if item.min1 == None:
+            min1 = "정보가 없슴니다."
+        else:
+            min1 = item.min1.string
+
+        if item.station1 == None:
+            
+            station1 = "정보가 없슴니다."
+        else:
+            station1 = item.station1.string
+
+        print("버스 번호:",item.lineno.string)
+        print("도착 시간:",min1)
+        print("남은 정류소 수:",station1)
+        print("="*20)
+        
+    return None
+
+info("동부아파트")
 
 def get_info():
     name = learn
@@ -66,19 +125,5 @@ def get_info():
     time2 = time1.text
     print(time2)
 
-@client.event
-async def on_ready():
-    Channel = client.get_channel('role_assignment')
-    Text= "공지를 읽어주시고 아래 반응을 눌러주세요."
-    Moji = await client.send_message(Channel, Text)
-    await client.add_reaction(Moji, emoji=':ok_hand:')
-@client.event
-async def on_reaction_add(reaction, user):
-    Channel = client.get_channel('role_assignment')
-    if reaction.message.channel.id != Channel
-    return
-    if reaction.emoji == ":ok_hand:":
-      Role = discord.utils.get(user.server.roles, name="Lv.1 Crook")
-      await client.add_roles(user, Role)
 learn = "Lv.99_B0SS"
 get_info()
