@@ -4,9 +4,15 @@ import os
 import sys
 from discord import Member
 from discord.ext import commands
+from itertools import cycle
+
+moji1=None
+moji2=None
+moji3=None
 
 client = discord.Client()
-token = os.environ[key]
+
+token = os.environ['key']
 
 @client.event
 async def on_ready():
@@ -14,15 +20,63 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print("===============")
-    await client.change_presence(game=discord.Game(name=":D", type=1))
+    
+    channel = client.get_channel('581685214422761492')
+    global moji1
+    global moji2
+    global moji3
+    
+    kr = "국적을 선택하세요..."
+    moji1 = await client.send_message(channel, kr)
+    await client.add_reaction(moji1, emoji='\U0001F1F7')
+
+    fo = "Press If You Aren't Korean..."
+    moji2 = await client.send_message(channel, fo)
+    await client.add_reaction(moji2, emoji='\U0001F1FA')
+
+    game = "게임을 선택하세요..."
+    moji3 = await client.send_message(channel, game)
+    await client.add_reaction(moji3, emoji='\U0001F3AE')
+
+@client.event
+async def on_reaction_add(reaction, user):
+    global moji1
+    global moji2
+    global moji3
+    
+    channel = client.get_channel('581685214422761492')
+
+    if reaction.emoji == "\U0001F1F7":
+        role = discord.utils.get(user.server.roles, id="460137279533481984")
+        await client.add_roles(user, role)
+
+    if reaction.emoji == "\U0001F1FA":
+        role = discord.utils.get(user.server.roles, id="460131974682771466")
+        await client.add_roles(user, role)
+        
+    if reaction.emoji == "\U0001F3AE":
+        role = discord.utils.get(user.server.roles, id="485720562472189952")
+        await client.add_roles(user, role)
+        
+@client.event
+async def on_reaction_remove(reaction, user):
+    if reaction.emoji == "\U0001F1F7":
+        role = discord.utils.get(user.server.roles, id="460137279533481984")
+        await client.remove_roles(user, role)
+    
+    if reaction.emoji == "\U0001F1FA":
+        role = discord.utils.get(user.server.roles, id="460131974682771466")
+        await client.remove_roles(user, role)
+        
+    if reaction.emoji == "\U0001F3AE":
+        role = discord.utils.get(user.server.roles, id="485720562472189952")
+        await client.remove_roles(user, role)
 
 @client.event
 async def on_member_join(member):
     fmt = '{1.name} 에 오신것을 환영합니다., {0.mention} 님. '
     channel = member.server.get_channel("450316317988356100")
     role = discord.utils.get(member.server.roles, id="450322259660374036")
-    await client.send_message(channel, fmt.format(member, member.server))
-    await client.send_message(member, "반갑습니다.")
     await client.add_roles(member, role)
 
 client.run(token)
