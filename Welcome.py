@@ -32,7 +32,7 @@ async def on_member_join(member):
     global moji2
     global moji3
     
-    kr = "국적을 선택하세요..."
+    kr = "한국인이면 누르세요..."
     moji1 = await client.send_message(channel, kr)
     await client.add_reaction(moji1, emoji='\U0001F1F7')
 
@@ -40,7 +40,7 @@ async def on_member_join(member):
     moji2 = await client.send_message(channel, fo)
     await client.add_reaction(moji2, emoji='\U0001F1FA')
 
-    game = "게임을 선택하세요..."
+    game = "레인보우식스 하시면 누르세요..."
     moji3 = await client.send_message(channel, game)
     await client.add_reaction(moji3, emoji='\U0001F3AE')
 
