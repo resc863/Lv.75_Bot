@@ -781,8 +781,8 @@ async def on_message(message):
         info1 = BeautifulSoup(inf1, "html.parser")
 
         embed = discord.Embed(
-            title=learn+ '역 버스 도착 정보',
-            description=learn,
+            title=station+ '역 버스 도착 정보',
+            description=station,
             colour=discord.Colour.gold()
         )
 
