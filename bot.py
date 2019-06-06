@@ -781,7 +781,7 @@ async def on_message(message):
         info1 = BeautifulSoup(inf1, "html.parser")
 
         embed = discord.Embed(
-            title=station+ '역 버스 도착 정보',
+            title=station+ '역 버스 도착 정보 1',
             description=station,
             colour=discord.Colour.gold()
         )
@@ -830,6 +830,14 @@ async def on_message(message):
             print("다음 정류장: ", nextstop2)
             embed.add_field(name='다음 정류장', value=nextstop2 , inline=False)
             print("*"*20)
+
+        await client.send_message(channel, embed=embed)
+
+        embed = discord.Embed(
+            title=station+ '역 버스 도착 정보 2',
+            description=station,
+            colour=discord.Colour.gold()
+        )
 
         inf2 = urllib.request.urlopen(url1)
         info2 = BeautifulSoup(inf2, "html.parser")
