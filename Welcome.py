@@ -33,7 +33,7 @@ async def on_member_join(member):
     role = discord.utils.get(member.server.roles, id="460137279533481984")
     await client.add_roles(member, role)
 
-    game = "레인보우 식스 하시면 누르세요"
+    game = "레인보우 식스 하시면 눌러주세요"
     moji3 = await client.send_message(channel, game)
     await client.add_reaction(moji3, emoji='\U0001F3AE')
 
