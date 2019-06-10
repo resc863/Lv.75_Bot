@@ -35,7 +35,6 @@ async def on_member_join(member):
 
     game = "레인보우 식스 하시면 눌러주세요"
     moji3 = await client.send_message(channel, game)
-    await client.add_reaction(moji3, emoji='\U0001F3AE')
 
 @client.event
 async def on_reaction_add(reaction, user):
