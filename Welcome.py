@@ -34,7 +34,6 @@ async def on_member_join(member):
     await client.add_roles(member, role)
 
     game = "레인보우 식스 하시면 눌러주세요"
-    moji3 = await client.send_message(channel, game)
 
 @client.event
 async def on_reaction_add(reaction, user):
