@@ -420,7 +420,7 @@ async def on_message(message):
             colour=discord.Colour.green())
         if solo3 == "No record":
             print("솔로 경기가 없습니다.")
-            embed.add_field(name='배그를 한판이라도 해주세요', value='솔로 경기 전적이 없습니다..', inline=False)
+            embed.add_field(name='Error 404 Not Found', value='솔로 경기 전적이 없습니다..', inline=False)
             await client.send_message(channel, embed=embed)
 
         else:
@@ -494,7 +494,7 @@ async def on_message(message):
             colour=discord.Colour.green())
         if duoRecord == 'No record':
             print('듀오 경기가 없습니다.')
-            embed.add_field(name='배그를 한판이라도 해주세요', value='듀오 경기 전적이 없습니다..', inline=False)
+            embed.add_field(name='Error 404 Not Found', value='듀오 경기 전적이 없습니다..', inline=False)
             await client.send_message(channel, embed=embed)
 
         else:
@@ -557,7 +557,7 @@ async def on_message(message):
             colour=discord.Colour.green())
         if duoRecord == 'No record':
             print('스쿼드 경기가 없습니다.')
-            embed.add_field(name='배그를 한판이라도 해주세요', value='스쿼드 경기 전적이 없습니다..', inline=False)
+            embed.add_field(name='Error 404 Not Found', value='스쿼드 경기 전적이 없습니다..', inline=False)
             await client.send_message(channel, embed=embed)
 
         else:
