@@ -1,0 +1,9 @@
+discord.py==0.16.12
+asyncio
+datetime
+requests
+youtube_dl
+bs4
+selenium
+ffmpeg
+PyNaCl
