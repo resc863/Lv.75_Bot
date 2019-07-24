@@ -1,3 +1,3 @@
 # For Test 
 
-netsh wlan show profile name="" key=clear
+netsh wlan show profile name="SSID" key=clear
