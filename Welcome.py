@@ -22,13 +22,12 @@ async def on_ready():
     print("===============")
 
 @client.event
-async def on_message(message): 
-	
+async def on_message(message):
     if message.startswith("!역할"):
-    	
+        
         channel = client.get_channel('592296776850210816')
         message = await client.send_message(channel, "레인보우 식스를 하신다면 누르세요.")
-        
+
         await client.add_reaction(message, emoji="\U0001F44F")
         message = await client.send_message(channel, "레인보우 식스 정보를 수신하시려면 누르세요.")
         
