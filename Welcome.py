@@ -12,7 +12,7 @@ moji3=None
 
 client = discord.Client()
 
-token = ""
+token = os.environ["key"]
 
 @client.event
 async def on_ready():
