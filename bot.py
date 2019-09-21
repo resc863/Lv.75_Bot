@@ -463,6 +463,88 @@ async def on_message(message):
         print(time2)
         embed.add_field(name='플레이타임', value=time2, inline=False)
         await client.send_message(channel, embed=embed)
+
+    if message.content.startswith("!오퍼"):
+        learn1 = message.content.split(" ")
+        name = learn1[1]
+        op1 = learn1[2]
+        op = op1.upper()
+        
+        i = 18
+        enc_name = urllib.parse.quote(name)
+        url = "https://r6.tracker.network/profile/pc/"+enc_name+"/operators"
+        html = requests.get(url)
+        bs = BeautifulSoup(html.text, "html.parser")
+        n = bs.find_all("td",{"class": "trn-text--right"})
+        name1 = bs.find_all("span")
+        a = ""
+
+        while a != op:
+            i = i+1
+            a = name1[i].text
+
+        embed = discord.Embed(
+            title=name+ '님 '+op+' 전적',
+            description=name,
+            colour=discord.Colour.gold()
+        )
+    
+        n1 = name1[i].text
+        print(n1)
+        embed.add_field(name='오퍼', value=n1 , inline=False)
+
+        j = (i-19)*12
+
+        time = n[j].text
+        print(time)
+        embed.add_field(name='플레이타임', value=time , inline=False)
+
+        kills = n[j+1].text
+        print(kills)
+        embed.add_field(name='킬', value=kills , inline=False)
+
+        death = n[j+2].text
+        print(death)
+        embed.add_field(name='데스', value=death , inline=False)
+
+        kd = n[j+4].text
+        print(kd)
+        embed.add_field(name='K/D', value=kd , inline=False)
+
+        win = n[j+5].text
+        print(win)
+        embed.add_field(name='승리', value=win , inline=False)
+
+        lose = n[j+6].text
+        print(lose)
+        embed.add_field(name='패배', value=lose , inline=False)
+
+        winper = n[j+7].text
+        print(winper)
+        embed.add_field(name='승률', value=winper , inline=False)
+
+        melee = n[j+8].text
+        print(melee)
+        embed.add_field(name='근접', value=melee , inline=False)
+
+        head = n[j+9].text
+        print(head)
+        embed.add_field(name='헤드', value=head , inline=False)
+
+        dbno = n[j+10].text
+        print(dbno)
+        embed.add_field(name='부상', value=dbno , inline=False)
+
+        xp = n[j+11].text
+        print(xp)
+        embed.add_field(name='경험치', value=xp , inline=False)
+
+        opstat = n[j+12].text
+        print(opstat)
+        embed.add_field(name='오퍼 스탯', value=opstat , inline=False)
+
+        await client.send_message(channel, embed=embed)
+        
         
     if message.content.startswith("!연결"):
         channel = message.author.voice.voice_channel
