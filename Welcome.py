@@ -23,7 +23,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.startswith("!역할"):
+    if message.content.startswith("!역할"):
         
         channel = client.get_channel('592296776850210816')
         message = await client.send_message(channel, "레인보우 식스를 하신다면 누르세요.")
