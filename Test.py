@@ -20,44 +20,55 @@ def op_info(name, op):
         a = name1[i].text
     
     n1 = name1[i].text
-    print(n1)
+    result="오퍼 이름: "+n1+"\n"
 
     j = (i-19)*12
 
     time = n[j].text
-    print(time)
+    result = result + "플레이타임: "+n[j].text+"\n"
 
     kills = n[j+1].text
-    print(kills)
+    result = result + "킬: "+n[j+1].text+"\n"
 
     death = n[j+2].text
-    print(death)
+    result = result + "데스: "+n[j+2].text+"\n"
 
-    kd = n[j+4].text
-    print(kd)
+    kd = n[j+3].text
+    result = result + "K/D: "+n[j+3].text+"\n"
 
-    win = n[j+5].text
-    print(win)
+    win = n[j+4].text
+    result = result + "승: "+n[j+4].text+"\n"
 
-    lose = n[j+6].text
-    print(lose)
+    lose = n[j+5].text
+    result = result + "패: "+n[j+5].text+"\n"
 
-    winper = n[j+7].text
-    print(winper)
+    winper = n[j+6].text
+    result = result + "승률: "+n[j+6].text+"\n"
 
-    melee = n[j+8].text
-    print(melee)
+    melee = n[j+7].text
+    result = result + "근접 킬: "+n[j+7].text+"\n"
 
-    head = n[j+9].text
-    print(head)
+    head = n[j+8].text
+    result = result + "헤드: "+n[j+8].text+"\n"
 
-    dbno = n[j+10].text
-    print(dbno)
+    dbno = n[j+9].text
+    result = result + "부상: "+n[j+9].text+"\n"
 
-    xp = n[j+11].text
-    print(xp)
+    xp = n[j+10].text
+    result = result + "경험치: "+n[j+10].text+"\n"
 
-    opstat = n[j+12].text
-    print(opstat)
+    opstat = n[j+11].text
+    result = result + "오퍼 스탯: "+n[j+11].text+"\n"
+
+    return result
  
-op_info("Lv.99_B0SS", "ASH")
+print("=================================================")
+print("=                                               =")
+print("=        레인보우 식스 전적검색 시스템          =")
+print("=                                               =")
+print("=================================================")
+q1 = input("닉네임 입력: ")
+q2 = input("오퍼 입력: ")
+print("\n검색중...\n")
+a = op_info(q1, q2)
+print(a)
