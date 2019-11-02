@@ -89,7 +89,7 @@ async def on_reaction_add(reaction, user):
         await client.add_roles(user, role)
     
     if reaction.emoji == "\U0001F91D":
-        role = discord.utils.get(user.server.roles, id="607893687472750608")
+        role = discord.utils.get(user.server.roles, id="638522416611721216")
         await client.add_roles(user, role)
     
     if reaction.emoji == "\U0001F91A":
@@ -136,7 +136,7 @@ async def on_reaction_remove(reaction, user):
         await client.remove_roles(user, role)
     
     if reaction.emoji == "\U0001F91D":
-        role = discord.utils.get(user.server.roles, id="607893687472750608")
+        role = discord.utils.get(user.server.roles, id="638522416611721216")
         await client.remove_roles(user, role)
     
     if reaction.emoji == "\U0001F91A":
