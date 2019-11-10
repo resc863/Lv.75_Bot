@@ -61,7 +61,7 @@ async def on_message(message):
     if message.content.startswith("!가이드"):  
         channel = client.get_channel('638039195234992155')
 
-        embed = discord.Embed(title="[Unknown Company]에 오신 것을 환영합니다!", description="다음을 읽고 버튼을 눌러 주십시오.", color=0x00ff00)
+        embed = discord.Embed(title="[Unknown Company]에 오신 것을 환영합니다!", description="아티스트(Artist)들과 게이머(Gamer)들을 위한 커뮤니티로 기본적인 예의를 지켜주시길 바랍니다. 공지(#notice)를 종종 확인해주시고, 필요에 따라 #role 에서 역할을 부여받으시면 됩니다. 이 내용을 모두 확인하셨다면 아래 이모지 버튼을 눌러 활동에 참여하세요!", color=0x00ff00)
         message = await client.send_message(channel, embed=embed)
         await client.add_reaction(message, emoji="\U0001F446")
 
