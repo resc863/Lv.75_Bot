@@ -53,7 +53,7 @@ def search_book(keyword):
             info['price'] = 'None'
         
         for i in data1:
-            data = data + i.string
+            data = data + i.string + " "
 
         info['data']=data
 
