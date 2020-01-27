@@ -272,9 +272,7 @@ async def on_ready():
     print(client.user.id)
     print("===============")
     await client.change_presence(game=discord.Game(name=":D", type=1))
-    channel = client.get_channel('579305105107714057')
-    message = await client.send_message(channel, "공지를 읽고 다음 이모지를 누르세요...")
-    await client.add_reaction(message, emoji="\U0001F44C")
+    
     
 @client.event
 async def on_message(message):
@@ -291,8 +289,77 @@ async def on_message(message):
     if message.content.startswith('반갑습니다'): 
         await client.send_message(channel, "반갑습니다 <@"+id+"> 님" )
         
-    if message.content.startswith('블루레이'): 
-        await client.send_message(channel, inf())
+    if message.content.startswith('블루레이'):
+        embed = discord.Embed(title="'겨울왕국 2' 블루레이 정보 ", description=inf())
+        await client.send_message(channel, embed = embed)
+
+    if message.content.startswith('멜론'): 
+        header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'}
+        melon = requests.get('https://www.melon.com/chart/index.htm', headers = header) # 멜론차트 웹사이트
+        html = melon.text
+        parse= BeautifulSoup(html, 'html.parser')
+
+        titles = parse.find_all("div", {"class": "ellipsis rank01"})
+        songs = parse.find_all("div", {"class": "ellipsis rank02"})
+ 
+        title = []
+        song = []
+ 
+        for t in titles:
+            title.append(t.find('a').text)
+ 
+        for s in songs:
+            song.append(s.find('span', {"class": "checkEllipsis"}).text)
+
+        embed = discord.Embed(title="멜론 실시간 차트", description="")
+ 
+        for i in range(25):
+            embed.add_field(name='%3d위: '%(i+1), value="%s - %s"%(title[i], song[i]), inline=False)
+
+        await client.send_message(channel, embed = embed)
+
+        embed = discord.Embed(title="멜론 실시간 차트", description="")
+ 
+        for i in range(25, 50):
+            embed.add_field(name='%3d위: '%(i+1), value="%s - %s"%(title[i], song[i]), inline=False)
+
+        await client.send_message(channel, embed = embed)
+
+   if message.content.startswith('빌보드'): 
+        url = 'https://www.billboard.com/charts/hot-100'
+        html = requests.get(url)
+        soup = BeautifulSoup(html.text, 'html.parser')
+
+        sp = soup.find_all('span', {'class': 'chart-element__information__song text--truncate color--primary'})
+        sp1 = soup.find_all('span', {'class': 'chart-element__information__artist text--truncate color--secondary'})
+
+        embed = discord.Embed(title="BillBoard Top 100 Lists", description="")
+ 
+        for i in range(25):
+            embed.add_field(name='%3d위: '%(i+1), value="%s - %s"%(sp[i].string, sp1[i].string), inline=False)
+
+        await client.send_message(channel, embed = embed)
+
+        embed = discord.Embed(title="BillBoard Top 100 Lists", description="")
+ 
+        for i in range(25, 50):
+            embed.add_field(name='%3d위: '%(i+1), value="%s - %s"%(sp[i].string, sp1[i].string), inline=False)
+
+        await client.send_message(channel, embed = embed)
+
+        embed = discord.Embed(title="BillBoard Top 100 Lists", description="")
+
+        for i in range(50, 75):
+            embed.add_field(name='%3d위: '%(i+1), value="%s - %s"%(sp[i].string, sp1[i].string), inline=False)
+
+        await client.send_message(channel, embed = embed)
+
+        embed = discord.Embed(title="BillBoard Top 100 Lists", description="")
+        
+        for i in range(75, 100):
+            embed.add_field(name='%3d위: '%(i+1), value="%s - %s"%(sp[i].string, sp1[i].string), inline=False)
+
+        await client.send_message(channel, embed = embed)
         
 
     if message.content.startswith('위대하신'): 
@@ -300,6 +367,11 @@ async def on_message(message):
         
     if message.content.startswith('오늘의 운세는?'): 
         await client.send_message(channel, "<@"+id+"> 님의 운은 "+a+"%입니다")
+
+    if message.content.startswith('역할'): 
+        channel = client.get_channel('579305105107714057')
+        message = await cient.send_message(channel, "공지를 읽고 다음 이모지를 누르세요.")
+        await client.add_reaction(message, emoji="\U0001F44C")
 
     if message.content.startswith('!명령어'):
         embed = discord.Embed(title="Lv.75 Bot 명령어 목록 ", description="반갑습니다 = 반갑습니다 id 님")
@@ -447,6 +519,16 @@ async def on_message(message):
         for idx, title in enumerate(element, 1):
            print(idx, title.text)
            embed.add_field(name=str(idx), value=title.text, inline=False)
+        await client.send_message(message.channel, embed=embed)
+
+    if message.content.startswith('서버'):
+
+        embed = discord.Embed(title="현재 서버 상태")
+        cpu = str(psutil.cpu_percent())
+        ram = str(psutil.virtual_memory())
+        print(cpu+"\n"+ram)
+        embed.add_field(name="CPU Usage: ", value=cpu, inline=False)
+        embed.add_field(name="RAM Usage: ", value=ram, inline=False)
         await client.send_message(message.channel, embed=embed)
 
     if message.content.startswith("롤"):
@@ -763,6 +845,61 @@ async def on_message(message):
             print("*"*20)
 
         await client.send_message(channel, embed=embed)
+
+    if message.content.startswith("!연결"):
+        channel = message.author.voice.voice_channel
+        server = message.server
+        voice_client = client.voice_client_in(server)
+        print(voice_client)
+
+        if voice_client== None:
+            await client.send_message(message.channel, '들어왔습니다') 
+            await client.join_voice_channel(channel)
+        else:
+            await client.send_message(message.channel, '봇이 이미 들어와있습니다.')
+
+    if message.content.startswith("!종료"):
+        server = message.server
+        voice_client = client.voice_client_in(server)
+
+        if voice_client == None:
+            await client.send_message(message.channel,'봇이 음성채널에 접속하지 않았습니다.') 
+            pass
+        else:
+            await client.send_message(message.channel, '나갑니다') 
+            await voice_client.disconnect()
+
+
+    if message.content.startswith("!play"):
+
+        channel = message.author.voice.voice_channel
+        server = message.server
+        voice_client = client.voice_client_in(server)
+        print(voice_client)
+
+        if voice_client== None:
+            await client.join_voice_channel(channel)
+
+        voice_client = client.voice_client_in(server)
+        player = await voice_client.create_ytdl_player('https://www.youtube.com/watch?v=gIOyB9ZXn8s')
+        print(player.is_playing())
+        players[server.id] = player
+        await client.send_message(message.channel, embed=discord.Embed(description="재생"))
+        print(player.is_playing())
+        player.start()
+
+
+    if message.content.startswith("!pause"):
+        id = message.server.id
+        await client.send_message(message.channel, embed=discord.Embed(description="장비를 정지합니다"))
+        players[id].pause()
+
+
+    if message.content.startswith("!stop"):
+        id = message.server.id
+        await client.send_message(message.channel, embed=discord.Embed(description="정지"))
+        players[id].stop()
+        print(players[id].is_playing())
 
 @client.event
 async def on_reaction_add(reaction, user):
