@@ -1,6 +1,6 @@
 import asyncio
 import discord
-import random
+import random, psutil
 import datetime
 import requests, re
 import youtube_dl
@@ -370,7 +370,7 @@ async def on_message(message):
 
     if message.content.startswith('역할'): 
         channel = client.get_channel('579305105107714057')
-        message = await cient.send_message(channel, "공지를 읽고 다음 이모지를 누르세요.")
+        message = await client.send_message(channel, "공지를 읽고 다음 이모지를 누르세요.")
         await client.add_reaction(message, emoji="\U0001F44C")
 
     if message.content.startswith('!명령어'):
