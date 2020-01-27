@@ -23,6 +23,97 @@ client = discord.Client()
 token = os.environ["bottoken"]
 schcode = ""
 
+def search_book(keyword):
+    base_url = 'https://www.aladin.co.kr/search/wsearchresult.aspx?'
+    encoding_type = 'EUC-KR'
+    book_list = []
+    params = {'SearchTarget':'DVD','SortOrder':11}
+    params['SearchWord'] = keyword
+
+    url =  base_url + urllib.parse.urlencode(params, encoding = encoding_type)
+    url_get = requests.get(url)
+    soup = BeautifulSoup(url_get.content, 'lxml')
+    items = soup.find_all(class_='ss_book_box')
+    list = []
+
+    for item in items:
+        if item.find(class_='ss_book_list') is None:
+            continue
+        name = item.find(class_="bo3").string
+        info = {}
+        info['name']=name
+
+        data1 = item.find(class_="ss_book_list").find_next('ul').find_all('li')[1].find_all('a')
+        data = ""
+
+        try:
+            price = item.find(class_="ss_book_list").find_next('ul').find_all('li')[2].find('span').string
+            info['price'] = price
+        except:
+            info['price'] = 'None'
+        
+        for i in data1:
+            data = data + i.string
+
+        info['data']=data
+
+        list.append(info)
+    return list
+
+def inf():
+    url = 'http://www.yes24.com/Product/Goods/84907426?scode=032&OzSrank=13'
+    html = requests.get(url).text
+
+    soup = BeautifulSoup(html, 'html.parser')
+
+    result = "Yes24 정보\n"
+
+    book_name = '#yDetailTopWrap > div.topColRgt > div.gd_infoTop > div > h2'
+    book = soup.select(book_name)
+    result = result + "타이틀명: "+book[0].text+"\n"
+
+    release_date = '#yDetailTopWrap > div.topColRgt > div.gd_infoTop > span.gd_pubArea > span'
+    release = soup.select(release_date)
+
+    for i in release:
+        date = i.get('class')
+
+        for j in date:
+            if j == 'gd_date':
+                result = result + "출시일 : "+i.text+"\n"
+
+    rating = '#yDetailTopWrap > div.topColRgt > div.gd_infoTop > span.gd_ratingArea > span'
+    rating1 = soup.select(rating)
+    result = result + "평가: "+rating1[0].text
+
+    price_info = '#yDetailTopWrap > div.topColRgt > div.gd_infoBot > div.gd_infoTbArea > div:nth-child(3) > table > tbody > tr:nth-child(1) > td > span > em'
+    price = soup.select(price_info)
+    result = result + "정가: "+price[0].text+"\n"
+
+    sale_price = '#yDetailTopWrap > div.topColRgt > div.gd_infoBot > div.gd_infoTbArea > div:nth-child(3) > table > tbody > tr.accentRow > td > span > em'
+    sale = soup.select(sale_price)
+    result = result + "할인가: " +sale[0].text
+
+    result = result + "\n\n"
+
+
+    url = 'https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=DVD&KeyWord=%B0%DC%BF%EF%BF%D5%B1%B9+2&KeyRecentPublish=0&OutStock=0&ViewType=Detail&CustReviewCount=0&CustReviewRank=0&KeyFullWord=%B0%DC%BF%EF%BF%D5%B1%B9+2&KeyLastWord=%B0%DC%BF%EF%BF%D5%B1%B9+2&CategorySearch=&chkKeyTitle=&chkKeyAuthor=&chkKeyPublisher=&chkKeyISBN=&chkKeyTag=&chkKeyTOC=&chkKeySubject='
+    html = requests.get(url).text
+
+    soup = BeautifulSoup(html, 'html.parser')
+
+    result = result + "알라딘 정보\n"
+
+    dvdlist = search_book('겨울왕국2')
+
+    for i in dvdlist:
+        result = result + "타이틀명: "+i['name']+"\n"
+        result = result + "가격: "+i['price']+"\n"
+        result = result + "정보: "+i['data']+"\n"
+        result = result + "\n\n"
+    
+    return result
+
 def stid(name,n):
     key = "0XeO7nbthbiRoMUkYGGah20%2BfXizwc0A6BfjrkL6qhh2%2Fsl8j9PzfSLGKnqR%2F1v%2F%2B6AunxntpLfoB3Ryd3OInQ%3D%3D"
     name = urllib.parse.quote(name)
@@ -200,6 +291,10 @@ async def on_message(message):
     if message.content.startswith('반갑습니다'): 
         await client.send_message(channel, "반갑습니다 <@"+id+"> 님" )
         
+    if message.content.startswith('블루레이'): 
+        await client.send_message(channel, inf())
+        
+
     if message.content.startswith('위대하신'): 
         await client.send_message(channel, "수령 동지를 위하여" )
         
@@ -546,65 +641,7 @@ async def on_message(message):
         await client.send_message(channel, embed=embed)
         
         
-    if message.content.startswith("!연결"):
-        channel = message.author.voice.voice_channel
-        server = message.server
-        voice_client = client.voice_client_in(server)
-        print(voice_client)
-        
-        if voice_client== None:
-            await client.send_message(message.channel, '들어왔습니다') 
-            await client.join_voice_channel(channel)
-        else:
-            await client.send_message(message.channel, '봇이 이미 들어와있습니다.')
-
-    if message.content.startswith("!종료"):
-        server = message.server
-        voice_client = client.voice_client_in(server)
-            
-        if voice_client == None:
-            await client.send_message(message.channel,'봇이 음성채널에 접속하지 않았습니다.') 
-            pass
-        else:
-            await client.send_message(message.channel, '나갑니다') 
-            await voice_client.disconnect()
-
-
-    if message.content.startswith("!play"):
-        
-        channel = message.author.voice.voice_channel
-        server = message.server
-        voice_client = client.voice_client_in(server)
-        print(voice_client)
-        
-        if voice_client== None:
-            await client.join_voice_channel(channel)
-
-        voice_client = client.voice_client_in(server)
-
-        msg1 = message.content.split(" ")
-        url = msg1[1]
-        player = await voice_client.create_ytdl_player(url)
-        print(player.is_playing())
-        players[server.id] = player
-        await client.send_message(message.channel, embed=discord.Embed(description="재생"))
-        print(player.is_playing())
-        player.start()
-
-
-    if message.content.startswith("!pause"):
-        id = message.server.id
-        await client.send_message(message.channel, embed=discord.Embed(description="장비를 정지합니다"))
-        players[id].pause()
-
-    i
-
-    if message.content.startswith("!stop"):
-        id = message.server.id
-        await client.send_message(message.channel, embed=discord.Embed(description="정지"))
-        players[id].stop()
-        print(players[id].is_playing())
-
+    
                  
     if message.content.startswith("버스"):
 
