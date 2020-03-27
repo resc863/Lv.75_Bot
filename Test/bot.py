@@ -17,7 +17,7 @@ from bs4 import BeautifulSoup #패키지 설치 필수
 
 client = discord.Client()
 
-token = "NTU4NDM1ODYyODU0MjM4MjI3.Xn1qzQ.RmUNJ8BcxPowx4_ZVHPLuhXpgtI"
+token = ".Xn1qzQ.RmUNJ8BcxPowx4_ZVHPLuhXpgtI"
 schcode = ""
 
 def search_book(keyword):
