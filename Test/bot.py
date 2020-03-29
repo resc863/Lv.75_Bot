@@ -12,6 +12,7 @@ import os
 import sys
 import json
 import parser
+import psutil
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup #패키지 설치 필수
 
@@ -295,6 +296,7 @@ async def on_message(message):
 
     id = message.author.id 
     channel = message.channel
+    guild = message.guild
 
     a = str(random.randint(1,100))
 
@@ -306,6 +308,26 @@ async def on_message(message):
         location = learn[1]
         embed = discord.Embed(title="블루레이 정보 ", description=inf(location))
         await message.channel.send(embed = embed)
+
+    if message.content.startswith('서버 정보'):
+        embed = discord.Embed(title=guild.name+" 정보", description="")
+        embed.add_field(name='서버 위치: ', value=guild.region, inline=False)
+        embed.add_field(name='서버 소유자: ', value=guild.owner.nick, inline=False)
+        embed.add_field(name='인원수: ', value=guild.member_count, inline=False)
+        embed.add_field(name='생성 일자: ', value=str(guild.created_at.year)+"년 "+str(guild.created_at.month)+"월 "+str(guild.created_at.day)+"일", inline=False)
+
+        await message.channel.send(embed = embed)
+
+    if message.content.startswith('추방'):
+        req = '추방 대상을 입력하십시오.'
+        ans = discord.Embed(title="Password", description=req, color=0xcceeff)
+        await message.channel.send(embed=ans)
+        name = await client.wait_for('message', timeout=15.0)
+        name = str(name.content)
+        print(guild.owner.nick)
+        member = guild.get_member_named(name)
+        print(member.nick)
+        #await member.kick()
 
     if message.content.startswith('멜론'): 
         header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'}
@@ -524,7 +546,7 @@ async def on_message(message):
            embed.add_field(name=str(idx), value=title.text, inline=False)
         await message.channel.send(embed=embed)
 
-    if message.content.startswith('서버'):
+    if message.content.startswith('서버 상태'):
 
         embed = discord.Embed(title="현재 서버 상태")
         cpu = str(psutil.cpu_percent())
@@ -847,34 +869,19 @@ async def on_message(message):
             embed.add_field(name='다음 정류장', value=nextstop2 , inline=False)
             print("*"*20)
 
-        await message.channel.send(embed=embed)
+        await message.channel.send(embed=embed)    
 
-@client.event
-async def on_reaction_add(reaction, user):
-    
-    channel = client.get_channel('579305105107714057')
-    
-    if reaction.emoji == "\U0001F44C":
-        role = user.guild.get_role("558210825555410972")
-        await user.add_roles(user, role)
-
-@client.event
-async def on_reaction_remove(reaction, user):
-    if reaction.emoji == "\U0001F44C":
-        role = user.guild.get_role("558210825555410972")
-        await user.remove_roles(user, role)
-        
 @client.event
 async def on_member_join(member):
     fmt = '{1.name} 에 오신것을 환영합니다., {0.mention} 님'
-    channel = member.server.get_channel("general")
-    await client.send_message(channel, fmt.format(member, member.server))
-    await client.send_message(member, "반갑습니다 <@"+id+">님. Lv.75 Bot을 이용해주셔서 감사합니다. 공지를 읽어주기 바랍니다.")
+    channel = member.server.system_channel
+    await channel.send(fmt.format(member, member.guild))
+    await member.send("반갑습니다 <@"+id+">님. Lv.75 Bot을 이용해주셔서 감사합니다. 공지를 읽어주기 바랍니다.")
 
 @client.event
 async def on_member_remove(member):
-    channel = member.server.get_channel("general")
+    channel = member.server.system_channel
     fmt = '{0.mention} 님이 나갔습니다.'
-    await client.send_message(channel, fmt.format(member, member.server))
+    await channel.send(fmt.format(member, member.server))
 
 client.run(token)
