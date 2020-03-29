@@ -17,8 +17,46 @@ from bs4 import BeautifulSoup #패키지 설치 필수
 
 client = discord.Client()
 
-token = ".Xn1qzQ.RmUNJ8BcxPowx4_ZVHPLuhXpgtI"
+token = ""
 schcode = ""
+
+def yes24(name):
+    url = 'http://www.yes24.com/searchcorner/Search?keywordAd=&keyword=&domain=DVD&qdomain=DVD%2F%BA%F1%B5%F0%BF%C0&query='+name
+    with urllib.request.urlopen(url) as f:
+        charset = f.headers.get_content_charset()
+        html = f.read().decode(charset)
+
+    soup = BeautifulSoup(html, 'html5lib')
+    title_elem = soup.select('div.goodsList p.goods_name a strong')
+    titles = []
+
+    for i in title_elem:
+        titles.append(i.text)
+    
+    price_elements = soup.select('div.goodsList p.goods_price strong')
+    prices = []
+
+    for i in price_elements:
+        prices.append(i.text)
+
+    date_elem = soup.select('div.goodsList div.goods_info em')
+    dates = []
+
+    for i in date_elem:
+        dates.append(i.text)
+
+    result = []
+
+    for i in range(len(titles)):
+        dict = {}
+        dict['title'] = titles[i]
+        dict['date'] = dates[i]
+        dict['price'] = prices[i]
+        result.append(dict)
+    
+    return result
+    
+    
 
 def search_book(keyword):
     base_url = 'https://www.aladin.co.kr/search/wsearchresult.aspx?'
@@ -57,56 +95,33 @@ def search_book(keyword):
         list.append(info)
     return list
 
-def inf():
-    url = 'http://www.yes24.com/Product/Goods/84907426?scode=032&OzSrank=13'
-    html = requests.get(url).text
+def inf(name):
+    result ="알라딘 정보\n"
 
-    soup = BeautifulSoup(html, 'html.parser')
-
-    result = "Yes24 정보\n"
-
-    book_name = '#yDetailTopWrap > div.topColRgt > div.gd_infoTop > div > h2'
-    book = soup.select(book_name)
-    result = result + "타이틀명: "+book[0].text+"\n"
-
-    release_date = '#yDetailTopWrap > div.topColRgt > div.gd_infoTop > span.gd_pubArea > span'
-    release = soup.select(release_date)
-
-    for i in release:
-        date = i.get('class')
-
-        for j in date:
-            if j == 'gd_date':
-                result = result + "출시일 : "+i.text+"\n"
-
-    rating = '#yDetailTopWrap > div.topColRgt > div.gd_infoTop > span.gd_ratingArea > span'
-    rating1 = soup.select(rating)
-    result = result + "평가: "+rating1[0].text
-
-    price_info = '#yDetailTopWrap > div.topColRgt > div.gd_infoBot > div.gd_infoTbArea > div:nth-child(3) > table > tbody > tr:nth-child(1) > td > span > em'
-    price = soup.select(price_info)
-    result = result + "정가: "+price[0].text+"\n"
-
-    sale_price = '#yDetailTopWrap > div.topColRgt > div.gd_infoBot > div.gd_infoTbArea > div:nth-child(3) > table > tbody > tr.accentRow > td > span > em'
-    sale = soup.select(sale_price)
-    result = result + "할인가: " +sale[0].text
-
-    result = result + "\n\n"
-
-
-    url = 'https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=DVD&KeyWord=%B0%DC%BF%EF%BF%D5%B1%B9+2&KeyRecentPublish=0&OutStock=0&ViewType=Detail&CustReviewCount=0&CustReviewRank=0&KeyFullWord=%B0%DC%BF%EF%BF%D5%B1%B9+2&KeyLastWord=%B0%DC%BF%EF%BF%D5%B1%B9+2&CategorySearch=&chkKeyTitle=&chkKeyAuthor=&chkKeyPublisher=&chkKeyISBN=&chkKeyTag=&chkKeyTOC=&chkKeySubject='
-    html = requests.get(url).text
-
-    soup = BeautifulSoup(html, 'html.parser')
-
-    result = result + "알라딘 정보\n"
-
-    dvdlist = search_book('겨울왕국2')
+    try:
+        dvdlist = search_book(name)
+    except:
+        result = result + "Error"
+        return result
 
     for i in dvdlist:
         result = result + "타이틀명: "+i['name']+"\n"
         result = result + "가격: "+i['price']+"\n"
         result = result + "정보: "+i['data']+"\n"
+        result = result + "\n\n"
+    
+    result = result + "YES24 정보\n"
+
+    try:
+        yes24list = yes24(name)
+    except:
+        result = result + "Error"
+        return result
+
+    for i in yes2list:
+        result = result + "타이틀명: "+i['title']+"\n"
+        result = result + "가격: "+i['price']+"\n"
+        result = result + "발매일: "+i['date']+"\n"
         result = result + "\n\n"
     
     return result
@@ -287,7 +302,9 @@ async def on_message(message):
         await message.channel.send("<@"+str(id)+">님 반갑습니다")
         
     if message.content.startswith('블루레이'):
-        embed = discord.Embed(title="'겨울왕국 2' 블루레이 정보 ", description=inf())
+        learn = message.content.split(" ")
+        location = learn[1]
+        embed = discord.Embed(title="블루레이 정보 ", description=inf(location))
         await message.channel.send(embed = embed)
 
     if message.content.startswith('멜론'): 
