@@ -873,10 +873,10 @@ async def on_message(message):
 
 @client.event
 async def on_member_join(member):
-    fmt = '{1.name} 에 오신것을 환영합니다., {0.mention} 님'
-    channel = member.server.system_channel
-    await channel.send(fmt.format(member, member.guild))
-    await member.send("반갑습니다 <@"+id+">님. Lv.75 Bot을 이용해주셔서 감사합니다. 공지를 읽어주기 바랍니다.")
+    await member.create_dm()
+    await member.dm_channel.send(
+        f'반갑습니다 {member.name} 님, '+member.guild.name+'에 오신것을 환영합니다'
+    )
 
 @client.event
 async def on_member_remove(member):
