@@ -1,6 +1,6 @@
 import asyncio
 import discord
-import random, psutil
+import random
 import datetime
 import requests, re
 import youtube_dl
@@ -12,16 +12,52 @@ import os
 import sys
 import json
 import parser
+import psutil
 from urllib.request import urlopen, Request
-from discord import Member
-from discord.ext import commands
-from discord.utils import get
 from bs4 import BeautifulSoup #패키지 설치 필수
 
 client = discord.Client()
 
-token = os.environ["bottoken"]
+token = ""
 schcode = ""
+
+def yes24(name):
+    url = 'http://www.yes24.com/searchcorner/Search?keywordAd=&keyword=&domain=DVD&qdomain=DVD%2F%BA%F1%B5%F0%BF%C0&query='+name
+    with urllib.request.urlopen(url) as f:
+        charset = f.headers.get_content_charset()
+        html = f.read().decode(charset)
+
+    soup = BeautifulSoup(html, 'html5lib')
+    title_elem = soup.select('div.goodsList p.goods_name a strong')
+    titles = []
+
+    for i in title_elem:
+        titles.append(i.text)
+    
+    price_elements = soup.select('div.goodsList p.goods_price strong')
+    prices = []
+
+    for i in price_elements:
+        prices.append(i.text)
+
+    date_elem = soup.select('div.goodsList div.goods_info em')
+    dates = []
+
+    for i in date_elem:
+        dates.append(i.text)
+
+    result = []
+
+    for i in range(len(titles)):
+        dict = {}
+        dict['title'] = titles[i]
+        dict['date'] = dates[i]
+        dict['price'] = prices[i]
+        result.append(dict)
+    
+    return result
+    
+    
 
 def search_book(keyword):
     base_url = 'https://www.aladin.co.kr/search/wsearchresult.aspx?'
@@ -60,56 +96,33 @@ def search_book(keyword):
         list.append(info)
     return list
 
-def inf():
-    url = 'http://www.yes24.com/Product/Goods/84907426?scode=032&OzSrank=13'
-    html = requests.get(url).text
+def inf(name):
+    result ="알라딘 정보\n"
 
-    soup = BeautifulSoup(html, 'html.parser')
-
-    result = "Yes24 정보\n"
-
-    book_name = '#yDetailTopWrap > div.topColRgt > div.gd_infoTop > div > h2'
-    book = soup.select(book_name)
-    result = result + "타이틀명: "+book[0].text+"\n"
-
-    release_date = '#yDetailTopWrap > div.topColRgt > div.gd_infoTop > span.gd_pubArea > span'
-    release = soup.select(release_date)
-
-    for i in release:
-        date = i.get('class')
-
-        for j in date:
-            if j == 'gd_date':
-                result = result + "출시일 : "+i.text+"\n"
-
-    rating = '#yDetailTopWrap > div.topColRgt > div.gd_infoTop > span.gd_ratingArea > span'
-    rating1 = soup.select(rating)
-    result = result + "평가: "+rating1[0].text
-
-    price_info = '#yDetailTopWrap > div.topColRgt > div.gd_infoBot > div.gd_infoTbArea > div:nth-child(3) > table > tbody > tr:nth-child(1) > td > span > em'
-    price = soup.select(price_info)
-    result = result + "정가: "+price[0].text+"\n"
-
-    sale_price = '#yDetailTopWrap > div.topColRgt > div.gd_infoBot > div.gd_infoTbArea > div:nth-child(3) > table > tbody > tr.accentRow > td > span > em'
-    sale = soup.select(sale_price)
-    result = result + "할인가: " +sale[0].text
-
-    result = result + "\n\n"
-
-
-    url = 'https://www.aladin.co.kr/search/wsearchresult.aspx?SearchTarget=DVD&KeyWord=%B0%DC%BF%EF%BF%D5%B1%B9+2&KeyRecentPublish=0&OutStock=0&ViewType=Detail&CustReviewCount=0&CustReviewRank=0&KeyFullWord=%B0%DC%BF%EF%BF%D5%B1%B9+2&KeyLastWord=%B0%DC%BF%EF%BF%D5%B1%B9+2&CategorySearch=&chkKeyTitle=&chkKeyAuthor=&chkKeyPublisher=&chkKeyISBN=&chkKeyTag=&chkKeyTOC=&chkKeySubject='
-    html = requests.get(url).text
-
-    soup = BeautifulSoup(html, 'html.parser')
-
-    result = result + "알라딘 정보\n"
-
-    dvdlist = search_book('겨울왕국2')
+    try:
+        dvdlist = search_book(name)
+    except:
+        result = result + "Error"
+        return result
 
     for i in dvdlist:
         result = result + "타이틀명: "+i['name']+"\n"
         result = result + "가격: "+i['price']+"\n"
         result = result + "정보: "+i['data']+"\n"
+        result = result + "\n\n"
+    
+    result = result + "YES24 정보\n"
+
+    try:
+        yes24list = yes24(name)
+    except:
+        result = result + "Error"
+        return result
+
+    for i in yes2list:
+        result = result + "타이틀명: "+i['title']+"\n"
+        result = result + "가격: "+i['price']+"\n"
+        result = result + "발매일: "+i['date']+"\n"
         result = result + "\n\n"
     
     return result
@@ -252,18 +265,18 @@ async def print_get_meal(local_date, local_weekday, message):
 
         if len(l_diet) == 1:
             embed = discord.Embed(title="No Meal", description="급식이 없습니다.", color=0x00ff00)
-            await client.send_message(message.channel, embed=embed)
+            await message.channel.send(embed=embed)
         elif len(d_diet) == 1:
             lunch = local_date + " 중식\n" + l_diet
             embed = discord.Embed(title="Lunch", description=lunch, color=0x00ff00)
-            await client.send_message(message.channel, embed=embed)
+            await message.channel.send(embed=embed)
         else:
             lunch = local_date + " 중식\n" + l_diet
             dinner = local_date + " 석식\n" + d_diet
             embed= discord.Embed(title="Lunch", description=lunch, color=0x00ff00)
-            await client.send_message(message.channel, embed=embed)
+            await message.channel.send(embed=embed)
             embed = discord.Embed(title="Dinner", description=dinner, color=0x00ff00)
-            await client.send_message(message.channel, embed=embed)
+            await message.channel.send(embed=embed)
             
 @client.event
 async def on_ready():
@@ -271,7 +284,7 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print("===============")
-    await client.change_presence(game=discord.Game(name=":D", type=1))
+    await client.change_presence(status=discord.Status.idle, activity=discord.Game(":D"))
     
     
 @client.event
@@ -283,15 +296,38 @@ async def on_message(message):
 
     id = message.author.id 
     channel = message.channel
+    guild = message.guild
 
     a = str(random.randint(1,100))
 
     if message.content.startswith('반갑습니다'): 
-        await client.send_message(channel, "반갑습니다 <@"+id+"> 님" )
+        await message.channel.send("<@"+str(id)+">님 반갑습니다")
         
     if message.content.startswith('블루레이'):
-        embed = discord.Embed(title="'겨울왕국 2' 블루레이 정보 ", description=inf())
-        await client.send_message(channel, embed = embed)
+        learn = message.content.split(" ")
+        location = learn[1]
+        embed = discord.Embed(title="블루레이 정보 ", description=inf(location))
+        await message.channel.send(embed = embed)
+
+    if message.content.startswith('서버 정보'):
+        embed = discord.Embed(title=guild.name+" 정보", description="")
+        embed.add_field(name='서버 위치: ', value=guild.region, inline=False)
+        embed.add_field(name='서버 소유자: ', value=guild.owner.nick, inline=False)
+        embed.add_field(name='인원수: ', value=guild.member_count, inline=False)
+        embed.add_field(name='생성 일자: ', value=str(guild.created_at.year)+"년 "+str(guild.created_at.month)+"월 "+str(guild.created_at.day)+"일", inline=False)
+
+        await message.channel.send(embed = embed)
+
+    if message.content.startswith('추방'):
+        req = '추방 대상을 입력하십시오.'
+        ans = discord.Embed(title="Password", description=req, color=0xcceeff)
+        await message.channel.send(embed=ans)
+        name = await client.wait_for('message', timeout=15.0)
+        name = str(name.content)
+        print(guild.owner.nick)
+        member = guild.get_member_named(name)
+        print(member.nick)
+        #await member.kick()
 
     if message.content.startswith('멜론'): 
         header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'}
@@ -323,9 +359,9 @@ async def on_message(message):
         for i in range(25, 50):
             embed.add_field(name='%3d위: '%(i+1), value="%s - %s"%(title[i], song[i]), inline=False)
 
-        await client.send_message(channel, embed = embed)
+        await message.channel.send(embed = embed)
 
-   if message.content.startswith('빌보드'): 
+    if message.content.startswith('빌보드'): 
         url = 'https://www.billboard.com/charts/hot-100'
         html = requests.get(url)
         soup = BeautifulSoup(html.text, 'html.parser')
@@ -359,37 +395,26 @@ async def on_message(message):
         for i in range(75, 100):
             embed.add_field(name='%3d위: '%(i+1), value="%s - %s"%(sp[i].string, sp1[i].string), inline=False)
 
-        await client.send_message(channel, embed = embed)
-        
-
-    if message.content.startswith('위대하신'): 
-        await client.send_message(channel, "수령 동지를 위하여" )
+        await message.channel.send(embed = embed)
         
     if message.content.startswith('오늘의 운세는?'): 
-        await client.send_message(channel, "<@"+id+"> 님의 운은 "+a+"%입니다")
+        await message.channel.send("<@"+str(id)+"> 님의 운은 "+a+"%입니다")
 
     if message.content.startswith('역할'): 
         channel = client.get_channel('579305105107714057')
-        message = await client.send_message(channel, "공지를 읽고 다음 이모지를 누르세요.")
-        await client.add_reaction(message, emoji="\U0001F44C")
-
-    if message.content.startswith('!명령어'):
-        embed = discord.Embed(title="Lv.75 Bot 명령어 목록 ", description="반갑습니다 = 반갑습니다 id 님")
-        embed.add_field(name="날씨", value="날씨 + 지역명 : 현재 지역 날씨", inline=False)
-        embed.add_field(name="급식", value="오늘 급식은? > 학교 이름 입력 > 날짜 입력 : 급식 식단 출력 (부산광역시교육청 전용)", inline=False)
-        embed.add_field(name="실시간 검색어 순위", value="실검 : 현재 실시간 검색어 순위", inline=False)
-        await client.send_message(message.channel, embed=embed)
+        message = await message.channel.send("공지를 읽고 다음 이모지를 누르세요.")
+        await message.add_reaction(emoji="\U0001F44C")
 
     if message.content.startswith('지금 시간은?'):
         embed = discord.Embed(title="현재 시각 ", description="지금 시간은")
         embed.set_footer(text = str(now.year) + "년 " + str(now.month) + "월 " + str(now.day) + "일 | " + str(now.hour) + ":" + str(now.minute) + ":" + str(now.second))
-        await client.send_message(message.channel, embed=embed)
+        await message.channel.send(embed=embed)
 
     if message.content.startswith('오늘 급식은?'):
         place = '학교명을 입력하세요'
         request_e = discord.Embed(title="Send to Me", description=place, color=0xcceeff)
-        await client.send_message(message.channel, embed=request_e)
-        schplace = await client.wait_for_message(timeout=15.0, author=message.author)
+        await message.channel.send(embed=request_e)
+        schplace = await client.wait_for('message', timeout=15.0)
         schplace = str(schplace.content) #사용 가능한 형식으로 변형
         print(schplace)
         print(get_code(schplace))
@@ -400,13 +425,13 @@ async def on_message(message):
 
         request = '날짜를 보내주세요...'
         request_e = discord.Embed(title=schplace, description=request, color=0xcceeff)
-        await client.send_message(message.channel, embed=request_e)
-        meal_date = await client.wait_for_message(timeout=15.0, author=message.author)
+        await message.channel.send(embed=request_e)
+        meal_date = await client.wait_for('message', timeout=15.0)
 
         #입력이 없을 경우
         if meal_date is None:
             longtimemsg = discord.Embed(title="In 15sec", description='15초내로 입력해주세요. 다시시도 : $g', color=0xff0000)
-            await client.send_message(message.channel, embed=longtimemsg)
+            await message.channel.send(embed=longtimemsg)
             return
 
         meal_date = str(meal_date.content) # 171121
@@ -423,7 +448,7 @@ async def on_message(message):
             whatday = eval(ss)
         except:
             warnning = discord.Embed(title="Plz Retry", description='올바른 값으로 다시 시도하세요 : $g', color=0xff0000)
-            await client.send_message(message.channel, embed=warnning)
+            await message.channel.send(embed=warnning)
             return
 
         await print_get_meal(meal_date, whatday, message)
@@ -507,7 +532,7 @@ async def on_message(message):
 
 
 
-        await client.send_message(message.channel,embed=embed)
+        await message.channel.send(embed=embed)
 
     if message.content.startswith('실검'):
         html = requests.get('https://www.naver.com').text
@@ -519,9 +544,9 @@ async def on_message(message):
         for idx, title in enumerate(element, 1):
            print(idx, title.text)
            embed.add_field(name=str(idx), value=title.text, inline=False)
-        await client.send_message(message.channel, embed=embed)
+        await message.channel.send(embed=embed)
 
-    if message.content.startswith('서버'):
+    if message.content.startswith('서버 상태'):
 
         embed = discord.Embed(title="현재 서버 상태")
         cpu = str(psutil.cpu_percent())
@@ -529,7 +554,7 @@ async def on_message(message):
         print(cpu+"\n"+ram)
         embed.add_field(name="CPU Usage: ", value=cpu, inline=False)
         embed.add_field(name="RAM Usage: ", value=ram, inline=False)
-        await client.send_message(message.channel, embed=embed)
+        await message.channel.send(embed=embed)
 
     if message.content.startswith("롤"):
         learn = message.content.split(" ")
@@ -577,7 +602,7 @@ async def on_message(message):
          embed.add_field(name='LP(점수)', value=jumsu4, inline=False)
          embed.add_field(name='승,패 정보', value=winlose2txt+" "+winlose2_1txt, inline=False)
          embed.add_field(name='승률', value=winlose2_2txt, inline=False)
-         await client.send_message(channel, embed=embed)
+         await message.channel.send(embed=embed)
          
             
     if message.content.startswith("레식"):
@@ -639,7 +664,7 @@ async def on_message(message):
         time2 = time1.text
         print(time2)
         embed.add_field(name='플레이타임', value=time2, inline=False)
-        await client.send_message(channel, embed=embed)
+        await message.channel.send(embed=embed)
 
     if message.content.startswith("!오퍼"):
         learn1 = message.content.split(" ")
@@ -720,7 +745,7 @@ async def on_message(message):
         print(opstat)
         embed.add_field(name='오퍼 스탯', value=opstat , inline=False)
 
-        await client.send_message(channel, embed=embed)
+        await message.channel.send(embed=embed)
         
         
     
@@ -787,7 +812,7 @@ async def on_message(message):
             embed.add_field(name='다음 정류장', value=nextstop2 , inline=False)
             print("*"*20)
 
-        await client.send_message(channel, embed=embed)
+        await message.channel.send(embed=embed)
 
         embed = discord.Embed(
             title=station+ '역 버스 도착 정보 2',
@@ -844,89 +869,19 @@ async def on_message(message):
             embed.add_field(name='다음 정류장', value=nextstop2 , inline=False)
             print("*"*20)
 
-        await client.send_message(channel, embed=embed)
+        await message.channel.send(embed=embed)    
 
-    if message.content.startswith("!연결"):
-        channel = message.author.voice.voice_channel
-        server = message.server
-        voice_client = client.voice_client_in(server)
-        print(voice_client)
-
-        if voice_client== None:
-            await client.send_message(message.channel, '들어왔습니다') 
-            await client.join_voice_channel(channel)
-        else:
-            await client.send_message(message.channel, '봇이 이미 들어와있습니다.')
-
-    if message.content.startswith("!종료"):
-        server = message.server
-        voice_client = client.voice_client_in(server)
-
-        if voice_client == None:
-            await client.send_message(message.channel,'봇이 음성채널에 접속하지 않았습니다.') 
-            pass
-        else:
-            await client.send_message(message.channel, '나갑니다') 
-            await voice_client.disconnect()
-
-
-    if message.content.startswith("!play"):
-
-        channel = message.author.voice.voice_channel
-        server = message.server
-        voice_client = client.voice_client_in(server)
-        print(voice_client)
-
-        if voice_client== None:
-            await client.join_voice_channel(channel)
-
-        voice_client = client.voice_client_in(server)
-        player = await voice_client.create_ytdl_player('https://www.youtube.com/watch?v=gIOyB9ZXn8s')
-        print(player.is_playing())
-        players[server.id] = player
-        await client.send_message(message.channel, embed=discord.Embed(description="재생"))
-        print(player.is_playing())
-        player.start()
-
-
-    if message.content.startswith("!pause"):
-        id = message.server.id
-        await client.send_message(message.channel, embed=discord.Embed(description="장비를 정지합니다"))
-        players[id].pause()
-
-
-    if message.content.startswith("!stop"):
-        id = message.server.id
-        await client.send_message(message.channel, embed=discord.Embed(description="정지"))
-        players[id].stop()
-        print(players[id].is_playing())
-
-@client.event
-async def on_reaction_add(reaction, user):
-    
-    channel = client.get_channel('579305105107714057')
-    
-    if reaction.emoji == "\U0001F44C":
-        role = discord.utils.get(user.server.roles, id="558210825555410972")
-        await client.add_roles(user, role)
-
-@client.event
-async def on_reaction_remove(reaction, user):
-    if reaction.emoji == "\U0001F44C":
-        role = discord.utils.get(user.server.roles, id="558210825555410972")
-        await client.remove_roles(user, role)
-        
 @client.event
 async def on_member_join(member):
     fmt = '{1.name} 에 오신것을 환영합니다., {0.mention} 님'
-    channel = member.server.get_channel("general")
-    await client.send_message(channel, fmt.format(member, member.server))
-    await client.send_message(member, "반갑습니다 <@"+id+">님. Lv.75 Bot을 이용해주셔서 감사합니다. 공지를 읽어주기 바랍니다.")
+    channel = member.server.system_channel
+    await channel.send(fmt.format(member, member.guild))
+    await member.send("반갑습니다 <@"+id+">님. Lv.75 Bot을 이용해주셔서 감사합니다. 공지를 읽어주기 바랍니다.")
 
 @client.event
 async def on_member_remove(member):
-    channel = member.server.get_channel("general")
+    channel = member.server.system_channel
     fmt = '{0.mention} 님이 나갔습니다.'
-    await client.send_message(channel, fmt.format(member, member.server))
+    await channel.send(fmt.format(member, member.server))
 
 client.run(token)
