@@ -374,21 +374,21 @@ async def on_message(message):
         for i in range(25):
             embed.add_field(name='%3d위: '%(i+1), value="%s - %s"%(sp[i].string, sp1[i].string), inline=False)
 
-        await client.send_message(channel, embed = embed)
+        await await message.channel.send(embed = embed)
 
         embed = discord.Embed(title="BillBoard Top 100 Lists", description="")
  
         for i in range(25, 50):
             embed.add_field(name='%3d위: '%(i+1), value="%s - %s"%(sp[i].string, sp1[i].string), inline=False)
 
-        await client.send_message(channel, embed = embed)
+        await await message.channel.send(embed = embed)
 
         embed = discord.Embed(title="BillBoard Top 100 Lists", description="")
 
         for i in range(50, 75):
             embed.add_field(name='%3d위: '%(i+1), value="%s - %s"%(sp[i].string, sp1[i].string), inline=False)
 
-        await client.send_message(channel, embed = embed)
+        await await message.channel.send(embed = embed)
 
         embed = discord.Embed(title="BillBoard Top 100 Lists", description="")
         
