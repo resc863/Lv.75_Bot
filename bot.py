@@ -18,7 +18,7 @@ from bs4 import BeautifulSoup #패키지 설치 필수
 
 client = discord.Client()
 
-token = "NTU4NDM1ODYyODU0MjM4MjI3.XoF0xg.HNSJbqFwlJ_Y4FjyMczyKZLqqFo"
+token = ""
 schcode = ""
 
 def mask(location):
