@@ -18,8 +18,17 @@ from bs4 import BeautifulSoup #패키지 설치 필수
 
 client = discord.Client()
 
-token = ""
+token = "NTU4NDM1ODYyODU0MjM4MjI3.XoF0xg.HNSJbqFwlJ_Y4FjyMczyKZLqqFo"
 schcode = ""
+
+def mask(location):
+    location = urllib.parse.quote(location)
+    url = "https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/storesByAddr/json?address="+location
+
+    html = urlopen(url).read().decode('utf-8')
+    data = json.loads(html).get('stores')
+
+    return data
 
 def yes24(name):
     url = 'http://www.yes24.com/searchcorner/Search?keywordAd=&keyword=&domain=DVD&qdomain=DVD%2F%BA%F1%B5%F0%BF%C0&query='+name
@@ -329,6 +338,37 @@ async def on_message(message):
         print(member.nick)
         #await member.kick()
 
+    if message.content.startswith('마스크'):
+        req = '현재 주소를 입력하십시오.'
+        ans = discord.Embed(title="Address", description=req, color=0xcceeff)
+        await message.channel.send(embed=ans)
+        name = await client.wait_for('message', timeout=15.0)
+        name = str(name.content)
+        
+        data = mask(name)
+        embed = discord.Embed(title=name+" 지역 마스크 정보", description="한 페이지에 25개만 표시됩니다.", color=0xcceeff)
+        stat = ""
+
+        length = len(data)
+        print(data)
+
+        for i in range(length):
+            try:
+                if data[i]['remain_stat'] == 'empty':
+                    stat = "재고 없음"
+                elif (data[i]['remain_stat'] == 'some') or (data[i]['remain_stat'] == 'plenty') or (data[i]['remain_stat'] == 'few'):
+                    stat = "재고 있음"
+
+                else:
+                    stat = "알 수 없음"
+            except:
+                stat = "알 수 없음"
+
+            embed.add_field(name=data[i]['name'], value=stat, inline=False)
+
+        await message.channel.send(embed=embed)
+
+
     if message.content.startswith('멜론'): 
         header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'}
         melon = requests.get('https://www.melon.com/chart/index.htm', headers = header) # 멜론차트 웹사이트
@@ -374,21 +414,21 @@ async def on_message(message):
         for i in range(25):
             embed.add_field(name='%3d위: '%(i+1), value="%s - %s"%(sp[i].string, sp1[i].string), inline=False)
 
-        await await message.channel.send(embed = embed)
+        await message.channel.send(embed = embed)
 
         embed = discord.Embed(title="BillBoard Top 100 Lists", description="")
  
         for i in range(25, 50):
             embed.add_field(name='%3d위: '%(i+1), value="%s - %s"%(sp[i].string, sp1[i].string), inline=False)
 
-        await await message.channel.send(embed = embed)
+        await message.channel.send(embed = embed)
 
         embed = discord.Embed(title="BillBoard Top 100 Lists", description="")
 
         for i in range(50, 75):
             embed.add_field(name='%3d위: '%(i+1), value="%s - %s"%(sp[i].string, sp1[i].string), inline=False)
 
-        await await message.channel.send(embed = embed)
+        await message.channel.send(embed = embed)
 
         embed = discord.Embed(title="BillBoard Top 100 Lists", description="")
         
