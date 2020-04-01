@@ -261,12 +261,6 @@ def get_code(school_name):
 
     return code
 
-def check_queue(id):
-    if queues[id] != []:
-        player = queues[id].pop(0)
-        players[id] = player
-        player.start()
-
 
 async def print_get_meal(local_date, local_weekday, message):
         l_diet = get_diet(2, local_date, local_weekday)
@@ -293,7 +287,7 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print("===============")
-    await client.change_presence(status=discord.Status.idle, activity=discord.Game(":D"))
+    await client.change_presence(status=discord.Status.idle, activity=discord.Game("Terminating..."))
     
     
 @client.event
@@ -311,6 +305,11 @@ async def on_message(message):
 
     if message.content.startswith('반갑습니다'): 
         await message.channel.send("<@"+str(id)+">님 반갑습니다")
+
+    if message.content.startswith("인텔"):
+        with open('intel-logo.jpg', 'rb') as f:
+            picture = discord.File(f)
+            await message.channel.send(file=picture)
         
     if message.content.startswith('블루레이'):
         learn = message.content.split(" ")
@@ -392,7 +391,7 @@ async def on_message(message):
         for i in range(25):
             embed.add_field(name='%3d위: '%(i+1), value="%s - %s"%(title[i], song[i]), inline=False)
 
-        await client.send_message(channel, embed = embed)
+        await message.channel.send(embed = embed)
 
         embed = discord.Embed(title="멜론 실시간 차트", description="")
  
@@ -441,9 +440,25 @@ async def on_message(message):
         await message.channel.send("<@"+str(id)+"> 님의 운은 "+a+"%입니다")
 
     if message.content.startswith('역할'): 
-        channel = client.get_channel('579305105107714057')
-        message = await message.channel.send("공지를 읽고 다음 이모지를 누르세요.")
+        channel = guild.system_channel
+        message = await channel.send("공지를 읽고 다음 이모지를 누르세요.")
         await message.add_reaction(emoji="\U0001F44C")
+
+    if message.content.startswith('DM'):
+        req = '대상을 입력하십시오.'
+        ans = discord.Embed(title="DM", description=req, color=0xcceeff)
+        await message.channel.send(embed=ans)
+        name = await client.wait_for('message', timeout=15.0)
+        name = str(name.content)
+        req = '메시지를 입력하십시오.'
+        ans = discord.Embed(title="DM", description=req, color=0xcceeff)
+        await message.channel.send(embed=ans)
+        sms = await client.wait_for('message', timeout=15.0)
+        sms = str(sms.content)
+        member = guild.get_member_named(name)
+        print(member.nick)
+        await member.create_dm()
+        await member.dm_channel.send(sms)
 
     if message.content.startswith('지금 시간은?'):
         embed = discord.Embed(title="현재 시각 ", description="지금 시간은")
@@ -914,14 +929,24 @@ async def on_message(message):
 @client.event
 async def on_member_join(member):
     await member.create_dm()
-    await member.dm_channel.send(
-        f'반갑습니다 {member.name} 님, '+member.guild.name+'에 오신것을 환영합니다'
-    )
+    await member.dm_channel.send("반갑습니다 "+member.guild.name+"에 오신것을 환영합니다")
 
 @client.event
-async def on_member_remove(member):
-    channel = member.server.system_channel
-    fmt = '{0.mention} 님이 나갔습니다.'
-    await channel.send(fmt.format(member, member.server))
+async def on_reaction_add(reaction, user):
+    print(reaction)
+    print(user.guild)
+    if reaction.emoji == "👌":
+        role = user.guild.get_role(693814807786291280)
+        print(role)
+        await user.add_roles(role) 
+
+@client.event
+async def on_reaction_remove(reaction, user):
+    print(reaction)
+    print(user.guild)
+    if reaction.emoji == "👌":
+        role = user.guild.get_role(693814807786291280)
+        print(role)
+        await user.remove_roles(role) 
 
 client.run(token)
