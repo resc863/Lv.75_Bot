@@ -465,6 +465,78 @@ async def on_message(message):
         embed.set_footer(text = str(now.year) + "년 " + str(now.month) + "월 " + str(now.day) + "일 | " + str(now.hour) + ":" + str(now.minute) + ":" + str(now.second))
         await message.channel.send(embed=embed)
 
+    if message.content.startswith('!connect'):
+        channel = message.author.voice.channel
+        if not channel:
+            await message.channel.send("음성 채널에 연결후 사용해 주십시오.")
+            return
+        await channel.connect()
+
+    if message.content.startswith('!play'):
+        req = '유튜브 주소를 입력하십시오.'
+        ans = discord.Embed(title="YouTube", description=req, color=0xcceeff)
+        await message.channel.send(embed=ans)
+        url = await client.wait_for('message', timeout=15.0)
+        url = str(url.content)
+
+        song_there = os.path.isfile("song.mp3")
+
+        try:
+            if song_there:
+                os.remove("song.mp3")
+
+        except PermissionError:
+            await message.channel.send("오류! 재생 실패")
+            return
+
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+            }],
+        }
+
+        print(url)
+
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
+        for file in os.listdir("./"):
+            if file.endswith(".mp3"):
+                os.rename(file, 'song.mp3')
+
+        voice = client.voice_clients
+        for i in voice:
+            if i.guild == message.author.guild:
+                i.play(discord.FFmpegPCMAudio("song.mp3"))
+                i.volume = 100
+                i.is_playing()
+
+
+    if message.content.startswith("!test"):
+        voice = client.voice_clients
+        for i in voice:
+            if i.guild == message.author.guild:
+                i.play(discord.FFmpegPCMAudio("test.flac"))
+                i.is_playing()
+
+    if message.content.startswith('!leave'):
+        song_there = os.path.isfile("song.mp3")
+
+        try:
+            if song_there:
+                os.remove("song.mp3")
+                
+        except PermissionError:
+            print("파일 삭제 실패")
+
+        voice = client.voice_clients
+        for i in voice:
+            if i.guild == message.author.guild:
+                await i.disconnect()
+        
+
     if message.content.startswith('오늘 급식은?'):
         place = '학교명을 입력하세요'
         request_e = discord.Embed(title="Send to Me", description=place, color=0xcceeff)
