@@ -1,4 +1,4 @@
-discord.py
+discord[voice]
 asyncio
 datetime
 requests
@@ -8,3 +8,5 @@ psutil
 selenium
 ffmpeg
 PyNaCl
+Flask
+pysqlite3
