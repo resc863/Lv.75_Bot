@@ -19,8 +19,8 @@ from bs4 import BeautifulSoup #패키지 설치 필수
 client = discord.Client()
 
 with open("D:/game/token.txt", "r") as f:
-    #token = f.read()
-    token = "NTU4NDM1ODYyODU0MjM4MjI3.XqpMCQ.RF3-eVRYJVv33-3DydcLMRA-xzA"
+    token = f.read()
+    #token
 
 schcode = ""
 
