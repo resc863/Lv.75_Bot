@@ -467,7 +467,7 @@ async def on_message(message):
     if message.content.startswith('역할'): 
         channel = guild.system_channel
         message = await channel.send("공지를 읽고 다음 이모지를 누르세요.")
-        await message.add_reaction(emoji="\U0001F44C")
+        await message.add_reaction(emoji="\U0001F910")
 
     if message.content.startswith('DM'):
         req = '대상을 입력하십시오.'
@@ -1056,7 +1056,7 @@ async def on_member_join(member):
 async def on_reaction_add(reaction, user):
     print(reaction)
     print(user.guild)
-    if reaction.emoji == "👌":
+    if reaction.emoji == "\U0001F910":
         role = user.guild.get_role(693814807786291280)
         print(role)
         await user.add_roles(role) 
@@ -1065,7 +1065,7 @@ async def on_reaction_add(reaction, user):
 async def on_reaction_remove(reaction, user):
     print(reaction)
     print(user.guild)
-    if reaction.emoji == "👌":
+    if reaction.emoji == "\U0001F910":
         role = user.guild.get_role(693814807786291280)
         print(role)
         await user.remove_roles(role) 
