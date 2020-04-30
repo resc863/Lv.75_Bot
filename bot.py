@@ -19,9 +19,31 @@ from bs4 import BeautifulSoup #패키지 설치 필수
 client = discord.Client()
 
 with open("D:/game/token.txt", "r") as f:
-    token = f.read()
+    #token = f.read()
+    token = "NTU4NDM1ODYyODU0MjM4MjI3.XqpMCQ.RF3-eVRYJVv33-3DydcLMRA-xzA"
 
 schcode = ""
+
+def yt(name):
+    url = "https://www.youtube.com/results?search_query=" + name
+    headers = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36' }
+    html = requests.get(url, headers=headers)
+
+    soup = BeautifulSoup(html.text, 'html.parser')
+    videos = soup.findAll('div', attrs={'class':'yt-lockup-content'})
+
+    result = []
+
+    for video in videos:
+        result1 = {}
+        name = video.find(dir='ltr').get('title')
+        link = 'https://www.youtube.com'+video.find(class_='yt-uix-tile-link').get('href')
+        result1['name'] = name
+        result1['link'] = link
+
+        result.append(result1)
+
+    return result
 
 def mask(location):
     location = urllib.parse.quote(location)
@@ -302,6 +324,7 @@ async def on_message(message):
     id = message.author.id 
     channel = message.channel
     guild = message.guild
+    playing = ""
 
     a = str(random.randint(1,100))
 
@@ -475,11 +498,29 @@ async def on_message(message):
         await channel.connect()
 
     if message.content.startswith('!play'):
-        req = '유튜브 주소를 입력하십시오.'
+        req = '영상 제목을 입력하십시오.'
         ans = discord.Embed(title="YouTube", description=req, color=0xcceeff)
         await message.channel.send(embed=ans)
-        url = await client.wait_for('message', timeout=15.0)
-        url = str(url.content)
+        name1 = await client.wait_for('message', timeout=15.0)
+        name = str(name1.content)
+
+        dic = yt(name)
+
+        req = '다음중 1개를 고르시오'
+        ans = discord.Embed(title="YouTube", description=req, color=0xcceeff)
+        i = 1
+
+        for data in dic:
+            name = data['name']
+            ans.add_field(name=i, value=name, inline=False)
+            i += 1
+        
+        await message.channel.send(embed=ans)
+        num1 = await client.wait_for('message', timeout=15.0)
+        num = int(num1.content)
+
+        url = dic[num-1]['link']
+        playing = dic[num-1]['name']
 
         song_there = os.path.isfile("song.mp3")
 
@@ -513,7 +554,13 @@ async def on_message(message):
             if i.guild == message.author.guild:
                 i.play(discord.FFmpegPCMAudio("song.mp3"))
                 i.volume = 100
-                i.is_playing()
+                await message.channel.send("Now Playing: "+playing)
+
+    if message.content.startswith("!status"):
+        voice = client.voice_clients
+        for i in voice:
+            if i.guild == message.author.guild:
+                await message.channel.send("Now Playing: "+playing)
 
 
     if message.content.startswith("!test"):
