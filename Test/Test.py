@@ -8,15 +8,25 @@ from bs4 import BeautifulSoup
 from urllib.request import urlopen
 import youtube_dl
 
-def mask(location):
-    location = urllib.parse.quote(location)
-    url = "https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/storesByAddr/json?address="+location
-    
+def yt(name):
+    url = "https://www.youtube.com/results?search_query=" + name
+    headers = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36' }
+    html = requests.get(url, headers=headers)
 
-    html = urlopen(url).read().decode('utf-8')
-    data = json.loads(html).get('stores')
+    soup = BeautifulSoup(html.text, 'html.parser')
+    videos = soup.findAll('div', attrs={'class':'yt-lockup-content'})
 
-    return data
+    result = []
 
+    for video in videos:
+        result1 = {}
+        name = video.find(dir='ltr').get('title')
+        link = 'https://www.youtube.com'+video.find(class_='yt-uix-tile-link').get('href')
+        result1['name'] = name
+        result1['link'] = link
 
-mask('부산광역시 해운대구')
+        result.append(result1)
+
+    return result
+
+print(yt('Coffin dance'))
