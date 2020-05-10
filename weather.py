@@ -22,4 +22,6 @@ for i in weather:
     print("체감 기온: "+str(feel))
     humidity = i['main']['humidity']
     print("습도: "+str(humidity))
+    cloud = i['weather'][0]['description']
+    print("구름: "+cloud)
     print("="*20)
