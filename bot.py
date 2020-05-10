@@ -668,6 +668,9 @@ async def on_message(message):
             humidity = i['main']['humidity']
             print("습도: "+str(humidity))
             embed.add_field(name='습도', value=humidity, inline=False)
+            cloud = i['weather'][0]['description']
+            print("구름: "+cloud)
+            embed.add_field(name='구름', value=cloud, inline=False)
             print("="*20)
         
 
