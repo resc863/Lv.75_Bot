@@ -24,7 +24,7 @@ with open("D:/game/token.txt", "r") as f:
 
 schcode = ""
 
-def weather(location):
+def weatherinfo(location):
     key = "23fb1206721ca9dd443fbc3f6b4f20ec"
     url = "http://api.openweathermap.org/data/2.5/forecast?q="+location+"&units=metric&lang=kr&APPID="+key
 
@@ -642,7 +642,7 @@ async def on_message(message):
         learn = message.content.split(" ")
         location = learn[1]
 
-        data = weather(location)
+        data = weatherinfo(location)
         
         name = data['city']['name']
         weather = data['list']
