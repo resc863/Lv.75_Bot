@@ -26,7 +26,7 @@ schcode = ""
 
 def weatherinfo(location):
     key = "23fb1206721ca9dd443fbc3f6b4f20ec"
-    url = "http://api.openweathermap.org/data/2.5/forecast?q="+location+"&units=metric&lang=kr&APPID="+key
+    url = "http://api.openweathermap.org/data/2.5/forecast?q="+location+"&cnt=10&units=metric&lang=kr&APPID="+key
 
     html = requests.get(url).text
     data = json.loads(html)
@@ -671,11 +671,9 @@ async def on_message(message):
             cloud = i['weather'][0]['description']
             print("구름: "+cloud)
             embed.add_field(name='구름', value=cloud, inline=False)
+            await message.channel.send(embed=embed)
             print("="*20)
-        
-
-
-        await message.channel.send(embed=embed)
+            
 
     if message.content.startswith('실검'):
         html = requests.get('https://www.naver.com').text
