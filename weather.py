@@ -15,6 +15,11 @@ print(name)
 
 for i in weather:
     date = datetime.datetime.fromtimestamp(i['dt']).strftime('%Y-%m-%d %H:%M:%S')
-    print(date)
-    print(i['main'])
-
+    print("예보 시각: "+date)
+    temp = i['main']['temp']
+    print("기온: "+str(temp))
+    feel = i['main']['feels_like']
+    print("체감 기온: "+str(feel))
+    humidity = i['main']['humidity']
+    print("습도: "+str(humidity))
+    print("="*20)
