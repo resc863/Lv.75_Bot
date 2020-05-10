@@ -2,7 +2,7 @@ import requests
 import json
 import datetime
 
-key = "23fb1206721ca9dd443fbc3f6b4f20ec"
+key = ""
 url = "http://api.openweathermap.org/data/2.5/forecast?q=busan&cnt=10&units=metric&lang=kr&APPID="+key
 
 html = requests.get(url).text
