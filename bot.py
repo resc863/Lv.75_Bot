@@ -649,13 +649,14 @@ async def on_message(message):
 
         print(name)
 
-        embed = discord.Embed(
-            title=learn[1]+ ' 날씨 정보',
-            description=learn[1]+ ' 날씨 정보입니다.',
-            colour=discord.Colour.gold()
-        )
 
         for i in weather:
+            embed = discord.Embed(
+                title=learn[1]+ ' 날씨 정보',
+                description=learn[1]+ ' 날씨 정보입니다.',
+                colour=discord.Colour.gold()
+            )
+            
             date = datetime.datetime.fromtimestamp(i['dt']).strftime('%Y-%m-%d %H:%M:%S')
             print("예보 시각: "+date)
             embed.add_field(name='예보 시각', value=date, inline=False)
